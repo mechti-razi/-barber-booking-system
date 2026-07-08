@@ -1,0 +1,128 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 10, 15, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(212, 175, 55, 0.12),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+  width: 92%;
+  max-width: 360px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 6px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-item.theme-toggle .icon-svg {
+  width: 16px;
+  height: 16px;
+  fill: #f3f4f6;
+}
+
+.nav-item.theme-toggle .nav-label {
+  font-size: 9px;
+  color: #d1d5db;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(146, 115, 30, 0.03) 100%);
+  border-color: rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.08);
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  margin-bottom: 2px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item.active .nav-icon {
+  transform: translateY(-2px) scale(1.12);
+}
+
+.icon-svg {
+  width: 18px;
+  height: 18px;
+  fill: #9ca3af;
+  transition: all 0.3s ease;
+}
+
+.nav-item.active .icon-svg {
+  fill: #d4af37;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
+}
+
+.nav-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.nav-item.active .nav-label {
+  color: #ffffff;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Hide the old dot indicator since container active state handles it beautifully */
+.nav-indicator {
+  display: none;
+}
+
+/* Dark mode default — light mode overrides come via [data-theme="light"] in styles.css */
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+/* Safe area for iPhone X and above */
+@supports (padding: max(0px)) {
+  .bottom-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}

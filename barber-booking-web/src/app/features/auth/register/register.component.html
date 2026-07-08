@@ -1,0 +1,166 @@
+<div class="auth-container auth-register">
+  <div class="auth-shell">
+
+    <!-- Left branding panel -->
+    <section class="auth-visual-panel">
+      <div class="brand-logo">
+        <div class="logo-icon-wrap">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16"/>
+            <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12"/>
+            <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <p class="brand-kicker">Create your profile</p>
+          <h1>Barber<span class="accent">Book</span></h1>
+        </div>
+      </div>
+
+      <p class="hero-copy">
+        Set up your account once — book faster, save your details, and track every visit from one place.
+      </p>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num">500+</span>
+          <span class="stat-label">Barbers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">Free</span>
+          <span class="stat-label">Always</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">30s</span>
+          <span class="stat-label">To sign up</span>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <span>✨ Quick setup</span>
+        <span>💾 Saved details</span>
+        <span>📅 Smart booking</span>
+      </div>
+    </section>
+
+    <!-- Right form panel -->
+    <section class="auth-form-panel">
+      <div class="auth-card">
+
+        <div class="card-header">
+          <span class="card-kicker">{{ 'auth.register.kicker' | translate }}</span>
+          <h2>{{ 'auth.register.title' | translate }}</h2>
+          <p>{{ 'auth.register.subtitle' | translate }}</p>
+        </div>
+
+        <!-- Social login -->
+        <div class="social-login">
+          <button type="button" class="btn-social btn-google" (click)="loginWithGoogle()">
+            <span class="social-icon">G</span> {{ 'auth.register.google' | translate }}
+          </button>
+          <button type="button" class="btn-social btn-facebook" (click)="loginWithFacebook()">
+            <span class="social-icon">f</span> {{ 'auth.register.facebook' | translate }}
+          </button>
+        </div>
+
+        <div class="divider"><span>{{ 'auth.register.orEmail' | translate }}</span></div>
+
+        <div *ngIf="error" class="alert-error" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ error }}
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- Name + Email row -->
+          <div class="form-row-2">
+            <div class="form-group" [class.has-error]="f['name'].invalid && f['name'].touched">
+              <label for="name">{{ 'auth.register.fullName' | translate }}</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <input type="text" id="name" formControlName="name" [placeholder]="'auth.register.fullNamePlaceholder' | translate" autocomplete="name"/>
+              </div>
+              <span *ngIf="f['name'].invalid && f['name'].touched" class="error-message">{{ 'auth.register.errors.nameMin' | translate }}</span>
+            </div>
+
+            <div class="form-group" [class.has-error]="f['email'].invalid && f['email'].touched">
+              <label for="email">{{ 'auth.register.email' | translate }}</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                <input type="email" id="email" formControlName="email" placeholder="name@example.com" autocomplete="email"/>
+              </div>
+              <span *ngIf="f['email'].invalid && f['email'].touched" class="error-message">{{ 'auth.register.errors.emailRequired' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">{{ 'auth.register.phone' | translate }} <span class="label-muted">{{ 'auth.register.phoneOptional' | translate }}</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.35 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6A16 16 0 0 0 15.4 16.1l.96-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+              <input type="tel" id="phone" formControlName="phone" [placeholder]="'auth.register.phonePlaceholder' | translate" autocomplete="tel"/>
+            </div>
+          </div>
+
+          <!-- Password row -->
+          <div class="form-row-2">
+            <div class="form-group" [class.has-error]="f['password'].invalid && f['password'].touched">
+              <label for="password">{{ 'auth.register.password' | translate }}</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" [placeholder]="'auth.register.passwordPlaceholder' | translate" autocomplete="new-password"/>
+                <button type="button" class="toggle-password" (click)="showPassword = !showPassword" aria-label="Toggle password">
+                  <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+              <span *ngIf="f['password'].invalid && f['password'].touched" class="error-message">{{ 'auth.register.errors.passwordMin' | translate }}</span>
+            </div>
+
+            <div class="form-group" [class.has-error]="f['password_confirmation'].errors?.['passwordMismatch']">
+              <label for="password_confirmation">{{ 'auth.register.confirm' | translate }}</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/>
+                  </svg>
+                </span>
+                <input [type]="showConfirm ? 'text' : 'password'" id="password_confirmation" formControlName="password_confirmation" placeholder="Repeat password" autocomplete="new-password"/>
+                <button type="button" class="toggle-password" (click)="showConfirm = !showConfirm" aria-label="Toggle confirm password">
+                  <svg *ngIf="!showConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg *ngIf="showConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+              <span *ngIf="f['password_confirmation'].errors?.['passwordMismatch']" class="error-message">{{ 'auth.register.errors.passwordMismatch' | translate }}</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="loading">
+            <span *ngIf="!loading">{{ 'auth.register.submit' | translate }}</span>
+            <span *ngIf="loading" class="btn-loading"><span class="spinner"></span> {{ 'auth.register.submitting' | translate }}</span>
+          </button>
+
+        </form>
+
+        <div class="auth-footer">
+          <p>{{ 'auth.register.hasAccount' | translate }} <a routerLink="/auth/login">{{ 'auth.register.signIn' | translate }}</a></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

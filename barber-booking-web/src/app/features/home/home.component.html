@@ -1,0 +1,222 @@
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════════════
+       STICKY HEADER
+  ══════════════════════════════════════════════════════ -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="6" r="3"></circle>
+            <circle cx="6" cy="18" r="3"></circle>
+            <line x1="9.8" y1="8.2" x2="21" y2="12.6"></line>
+            <line x1="9.8" y1="15.8" x2="21" y2="11.4"></line>
+          </svg>
+        </div>
+        <span class="brand-name">BarberBook</span>
+      </div>
+
+      <!-- Auth actions -->
+      <div class="top-actions">
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/auth/login"    class="top-link">{{ 'nav.signIn' | translate }}</a>
+          <a routerLink="/auth/register" class="top-cta">{{ 'nav.getStarted' | translate }}</a>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <a routerLink="/barber"       *ngIf="currentUser?.role === 'barber'" class="top-link">{{ 'nav.myPanel' | translate }}</a>
+          <a routerLink="/admin"        *ngIf="currentUser?.role === 'admin'"  class="top-link">{{ 'nav.admin' | translate }}</a>
+          <a routerLink="/appointments"                                         class="top-link">{{ 'nav.bookings' | translate }}</a>
+          <button (click)="logout()" class="top-link top-logout">{{ 'nav.signOut' | translate }}</button>
+        </ng-container>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+
+    <!-- Logged-in greeting -->
+    <div class="hero-greeting" *ngIf="isLoggedIn">
+      <span class="greeting-dot"></span>
+      {{ 'home.greeting' | translate }}, {{ currentUser?.name?.split(' ')[0] }}
+    </div>
+
+    <h1 class="hero-title">
+      {{ 'home.heroTitle1' | translate }}<br>
+      <span class="hero-accent">{{ 'home.heroTitle2' | translate }}</span> {{ 'home.heroTitle3' | translate }}
+    </h1>
+    <p class="hero-sub">{{ 'home.heroCopy' | translate }}</p>
+
+    <div class="hero-btns">
+      <a routerLink="/shops" class="btn-hero-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        {{ 'home.findShop' | translate }}
+      </a>
+      <a routerLink="/auth/register" *ngIf="!isLoggedIn" class="btn-hero-secondary">
+        {{ 'home.createAccount' | translate }}
+      </a>
+      <a routerLink="/appointments" *ngIf="isLoggedIn" class="btn-hero-secondary">
+        {{ 'home.myBookings' | translate }}
+      </a>
+    </div>
+
+    <!-- Trust badges -->
+    <div class="trust-row">
+      <span class="trust-item">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        {{ 'home.trust.rating' | translate }}
+      </span>
+      <span class="trust-sep">·</span>
+      <span class="trust-item">{{ 'home.trust.instant' | translate }}</span>
+      <span class="trust-sep">·</span>
+      <span class="trust-item">{{ 'home.trust.free' | translate }}</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       NEXT APPOINTMENT BANNER (logged-in only)
+  ══════════════════════════════════════════════════════ -->
+  <section class="appt-banner" *ngIf="isLoggedIn && nextAppointment">
+    <div class="appt-banner-inner">
+      <div class="appt-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="appt-info">
+        <p class="appt-label">{{ 'home.nextAppointment' | translate }}</p>
+        <p class="appt-detail">
+          <strong>{{ nextAppointment.service_name }}</strong>
+          &nbsp;·&nbsp;{{ formatDate(nextAppointment.date) }}
+          &nbsp;at&nbsp;{{ nextAppointment.time }}
+        </p>
+      </div>
+      <a routerLink="/appointments" class="appt-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FEATURED SHOPS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">{{ 'home.featuredShops' | translate }}</h2>
+      <a routerLink="/shops" class="section-link">{{ 'common.viewAll' | translate }}</a>
+    </div>
+
+    <!-- loading -->
+    <div class="shops-loading" *ngIf="loadingShops">
+      <div class="shop-skeleton" *ngFor="let i of [1,2,3]"></div>
+    </div>
+
+    <!-- shop cards -->
+    <div class="shops-scroll" *ngIf="!loadingShops && featuredShops.length > 0">
+      <a class="shop-thumb" *ngFor="let shop of featuredShops"
+         [routerLink]="['/shops', shop.id]">
+        <div class="shop-thumb-cover">
+          <img [src]="shop.logo_url || 'https://picsum.photos/400/220?random=' + shop.id" [alt]="shop.name"
+               loading="lazy" class="shop-thumb-img"/>
+          <div class="shop-thumb-overlay"></div>
+          <span class="shop-open-dot" [class.open]="shop.active"></span>
+        </div>
+        <div class="shop-thumb-body">
+          <p class="shop-thumb-name">{{ shop.name }}</p>
+          <p class="shop-thumb-addr">{{ shop.address }}</p>
+          <div class="shop-thumb-badges">
+            <span class="tb">{{ shop.barbers?.length || 0 }} {{ 'shopList.barbers' | translate }}</span>
+            <span class="tb tb-muted">{{ shop.services?.length || 0 }} {{ 'shopList.services' | translate }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- empty -->
+    <div class="empty-shops" *ngIf="!loadingShops && featuredShops.length === 0">
+      <p>{{ 'home.noShops' | translate }}</p>
+    </div>
+
+    <a routerLink="/shops" class="shops-cta-btn">
+      {{ 'home.browseAllShops' | translate }}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       HOW IT WORKS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section how-section">
+    <div class="section-head">
+      <h2 class="section-title">{{ 'home.howItWorks' | translate }}</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step" *ngFor="let step of steps">
+        <div class="step-num">{{ step.n }}</div>
+        <div>
+          <p class="step-title">{{ step.title }}</p>
+          <p class="step-desc">{{ step.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       REVIEWS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">{{ 'home.whatClientsSay' | translate }}</h2>
+    </div>
+    <div class="reviews-scroll">
+      <div class="review-card" *ngFor="let r of reviews">
+        <div class="review-stars">
+          <svg *ngFor="let s of [1,2,3,4,5]" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <p class="review-text">"{{ r.text }}"</p>
+        <div class="review-author">
+          <div class="review-avatar">{{ r.avatar }}</div>
+          <span class="review-name">{{ r.name }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       BOTTOM CTA (not logged in)
+  ══════════════════════════════════════════════════════ -->
+  <section class="cta-section" *ngIf="!isLoggedIn">
+    <div class="cta-glow"></div>
+    <h2 class="cta-title">{{ 'home.ctaTitle' | translate }}</h2>
+    <p class="cta-sub">{{ 'home.ctaSub' | translate }}</p>
+    <div class="cta-btns">
+      <a routerLink="/auth/register" class="btn-hero-primary">{{ 'home.createAccount' | translate }}</a>
+      <a routerLink="/shops"         class="btn-hero-secondary">{{ 'home.browseShops' | translate }}</a>
+    </div>
+  </section>
+</div>

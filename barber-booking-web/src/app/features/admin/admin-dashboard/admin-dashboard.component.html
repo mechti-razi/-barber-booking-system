@@ -1,0 +1,859 @@
+<div class="admin-dashboard-container">
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading Admin Space...</p>
+  </div>
+
+  <div *ngIf="!loading" class="dashboard-wrapper">
+    <!-- Desktop Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16" />
+          <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12" />
+          <circle cx="32" cy="32" r="2.5" fill="currentColor" />
+        </svg>
+        <span class="logo-text">Barber<span class="accent">Book</span></span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button [class.active]="activeTab === 'overview'" (click)="changeTab('overview')">
+          <span class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          Overview & Analytics
+        </button>
+        <button [class.active]="activeTab === 'barbers'" (click)="changeTab('barbers')">
+          <span class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          Manage Barbers
+        </button>
+        <button [class.active]="activeTab === 'settings'" (click)="changeTab('settings')">
+          <span class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </span>
+          Subscription Settings
+        </button>
+        <button [class.active]="activeTab === 'services'" (click)="changeTab('services')">
+          <span class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </span>
+          Manage Services
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="avatar">{{ currentUser?.name?.charAt(0) }}</div>
+          <div class="info">
+            <span class="name">{{ currentUser?.name }}</span>
+            <span class="role">Administrator</span>
+          </div>
+        </div>
+        <button (click)="logout()" class="btn btn-secondary btn-logout">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <main class="main-content-area">
+      <header class="workspace-header">
+        <div class="title-section">
+          <h2>{{ activeTab === 'overview' ? 'Overview & Analytics' : activeTab === 'barbers' ? 'Manage Barbers' : activeTab === 'services' ? 'Manage Services' : 'Subscription Settings' }}</h2>
+          <p>Manage bookings, system statistics, and barber subscriptions</p>
+        </div>
+        <div class="date-badge">2026 Space</div>
+      </header>
+
+      <!-- Overview Tab -->
+      <section *ngIf="activeTab === 'overview'" class="tab-pane fade-in">
+        <!-- Welcoming Alert Banner -->
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <h3>Welcome Back, {{ currentUser?.name }}!</h3>
+            <p>Here's what's happening with your barber shop today. Review bookings, metrics, and manage subscriptions.</p>
+          </div>
+          <div class="welcome-accent">
+            <svg class="scissors-accent-svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16" />
+              <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12" />
+              <circle cx="32" cy="32" r="2.5" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Filter Controls & Stats Grid -->
+        <div class="stats-controls">
+          <span>Performance Overview</span>
+          <div class="time-range-selectors">
+            <button [class.active]="timeRange === 'week'" (click)="changeTimeRange('week')">Week</button>
+            <button [class.active]="timeRange === 'month'" (click)="changeTimeRange('month')">Month</button>
+            <button [class.active]="timeRange === 'year'" (click)="changeTimeRange('year')">Year</button>
+          </div>
+        </div>
+
+        <!-- Row 1: Core Counts -->
+        <div class="stats-grid">
+          <!-- Active Shops -->
+          <div class="stat-card">
+            <div class="stat-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Active Shops</h3>
+              <p class="stat-value">{{ stats.shopsCount }}</p>
+            </div>
+          </div>
+
+          <!-- Total Barbers -->
+          <div class="stat-card">
+            <div class="stat-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Total Barbers</h3>
+              <p class="stat-value">{{ stats.barbersCount }}</p>
+            </div>
+          </div>
+
+          <!-- Active Subscriptions -->
+          <div class="stat-card kpi-active">
+            <div class="stat-icon-wrapper kpi-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Active Subscriptions</h3>
+              <p class="stat-value">{{ subStats.totalActive }}</p>
+              <span class="stat-badge badge-green">Currently live</span>
+            </div>
+          </div>
+
+          <!-- Revenue This Month -->
+          <div class="stat-card kpi-revenue">
+            <div class="stat-icon-wrapper kpi-gold">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Revenue This Month</h3>
+              <p class="stat-value">{{ subStats.revenueThisMonth | number:'1.2-2' }} DZD</p>
+              <span class="stat-badge badge-gold">{{ subStats.newThisMonth }} paid this month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Subscription Health KPIs -->
+        <div class="stats-grid kpi-row-2">
+          <!-- New This Month -->
+          <div class="stat-card kpi-new">
+            <div class="stat-icon-wrapper kpi-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="16"/>
+                <line x1="8" y1="12" x2="16" y2="12"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>New This Month</h3>
+              <p class="stat-value">{{ subStats.newThisMonth }}</p>
+              <span class="stat-badge badge-blue">Subscriptions started</span>
+            </div>
+          </div>
+
+          <!-- Expiring This Month -->
+          <div class="stat-card kpi-expiring">
+            <div class="stat-icon-wrapper kpi-orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Expiring This Month</h3>
+              <p class="stat-value">{{ subStats.expiringThisMonth }}</p>
+              <span class="stat-badge badge-orange">Renewal needed soon</span>
+            </div>
+          </div>
+
+          <!-- Already Expired -->
+          <div class="stat-card kpi-expired">
+            <div class="stat-icon-wrapper kpi-red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Already Expired</h3>
+              <p class="stat-value">{{ subStats.expiredCount }}</p>
+              <span class="stat-badge badge-red">Inactive barbers</span>
+            </div>
+          </div>
+
+          <!-- Plan Breakdown -->
+          <div class="stat-card kpi-plans">
+            <div class="stat-icon-wrapper kpi-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <h3>Plans Breakdown</h3>
+              <div class="plan-breakdown">
+                <span class="plan-pill plan-monthly">Monthly: {{ subStats.monthlyCount }}</span>
+                <span class="plan-pill plan-quarterly">Quarterly: {{ subStats.quarterlyCount }}</span>
+                <span class="plan-pill plan-yearly">Yearly: {{ subStats.yearlyCount }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Charts & Activity Row -->
+        <div class="analytics-row">
+          <div class="chart-card">
+            <h3>Subscription Trends</h3>
+            <p class="subtitle">Subscriptions successfully renewed/paid over the current timeframe</p>
+            
+            <!-- Dynamic CSS Chart Bars -->
+            <div class="mock-chart-container">
+              <div 
+                *ngFor="let bar of chartBars" 
+                [class]="'chart-bar-item' + (bar.isMax ? ' highlighted' : '')" 
+                [style.height.%]="bar.height"
+              >
+                <span class="bar-val">{{ bar.count }}</span>
+                <span class="bar-label">{{ bar.label }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-card">
+            <h3>Recent System Logs</h3>
+            <div class="activity-list">
+              <div *ngFor="let item of activities" class="activity-item">
+                <div class="bullet"></div>
+                <div class="details">
+                  <p class="text">{{ item.text }}</p>
+                  <span class="time">{{ item.time }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Manage Barbers Tab -->
+      <section *ngIf="activeTab === 'barbers'" class="tab-pane fade-in">
+
+        <!-- Barbers Tab Header -->
+        <div class="barbers-header">
+          <div class="barbers-title-block">
+            <h2 class="barbers-heading">Barber Roster</h2>
+            <span class="barbers-count-chip">{{ barbers.length }} registered</span>
+          </div>
+          <button (click)="openBarberModal()" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;vertical-align:middle;margin-right:6px">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add New Barber
+          </button>
+        </div>
+
+        <!-- Search + Filter Bar -->
+        <div class="barbers-toolbar">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              type="text"
+              [(ngModel)]="barberSearch"
+              placeholder="Search by name, email or specialization…"
+              class="search-input"
+            />
+          </div>
+          <div class="filter-tabs">
+            <button [class.active]="barberFilter==='all'"      (click)="barberFilter='all'">All ({{ barbers.length }})</button>
+            <button [class.active]="barberFilter==='active'"   (click)="barberFilter='active'" class="f-active">Active ({{ subStats.totalActive }})</button>
+            <button [class.active]="barberFilter==='expiring'" (click)="barberFilter='expiring'" class="f-expiring">Expiring ({{ subStats.expiringThisMonth }})</button>
+            <button [class.active]="barberFilter==='expired'"  (click)="barberFilter='expired'" class="f-expired">Expired ({{ subStats.expiredCount }})</button>
+          </div>
+        </div>
+
+        <!-- Barber Cards Grid -->
+        <div class="barber-cards-grid" *ngIf="filteredBarbers.length > 0">
+          <div
+            *ngFor="let barber of filteredBarbers"
+            class="barber-card"
+            [class.card-active]="barber.active || barber.is_active"
+            [class.card-expired]="expiryUrgency(barber.subscription_expiry_date) === 'expired'"
+            [class.card-critical]="expiryUrgency(barber.subscription_expiry_date) === 'critical'"
+          >
+            <!-- Card Header: Avatar + Name + Status -->
+            <div class="bc-header">
+              <div class="bc-avatar">{{ (barber.name || '?').charAt(0).toUpperCase() }}</div>
+              <div class="bc-name-block">
+                <span class="bc-name">{{ barber.name }}</span>
+                <span class="bc-email">{{ barber.email }}</span>
+              </div>
+              <span
+                class="bc-status-dot"
+                [class.dot-active]="barber.active || barber.is_active"
+                [class.dot-inactive]="!(barber.active || barber.is_active)"
+                [title]="(barber.active || barber.is_active) ? 'Active' : 'Inactive'"
+              ></span>
+            </div>
+
+            <!-- Key Details Grid -->
+            <div class="bc-details">
+              <div class="bc-detail-item">
+                <span class="bc-detail-label">Specialization</span>
+                <span class="bc-detail-value">{{ barber.specialization || '—' }}</span>
+              </div>
+              <div class="bc-detail-item">
+                <span class="bc-detail-label">Experience</span>
+                <span class="bc-detail-value">{{ barber.experience || '—' }}</span>
+              </div>
+              <div class="bc-detail-item">
+                <span class="bc-detail-label">Rating</span>
+                <span class="bc-detail-value rating-val">
+                  <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:#f0c040;stroke:none;vertical-align:middle;margin-right:3px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {{ (barber.rating | number:'1.1-1') || 'N/A' }}
+                </span>
+              </div>
+              <div class="bc-detail-item">
+                <span class="bc-detail-label">Phone</span>
+                <span class="bc-detail-value">{{ barber.phone || '—' }}</span>
+              </div>
+            </div>
+
+            <!-- Subscription Block -->
+            <div class="bc-subscription">
+              <div class="bc-sub-row">
+                <span
+                  *ngIf="barber.subscription_type"
+                  class="sub-plan-badge"
+                  [class.plan-monthly]="barber.subscription_type==='monthly'"
+                  [class.plan-quarterly]="barber.subscription_type==='quarterly'"
+                  [class.plan-yearly]="barber.subscription_type==='yearly'"
+                >{{ barber.subscription_type | titlecase }}</span>
+                <span *ngIf="!barber.subscription_type" class="no-plan-badge">No Plan</span>
+
+                <!-- Expiry urgency pill -->
+                <span
+                  *ngIf="barber.subscription_expiry_date"
+                  class="expiry-pill"
+                  [class.expiry-ok]="expiryUrgency(barber.subscription_expiry_date)==='ok'"
+                  [class.expiry-soon]="expiryUrgency(barber.subscription_expiry_date)==='soon'"
+                  [class.expiry-critical]="expiryUrgency(barber.subscription_expiry_date)==='critical'"
+                  [class.expiry-expired]="expiryUrgency(barber.subscription_expiry_date)==='expired'"
+                >
+                  <ng-container [ngSwitch]="expiryUrgency(barber.subscription_expiry_date)">
+                    <span *ngSwitchCase="'expired'">⚠ Expired</span>
+                    <span *ngSwitchCase="'critical'">🔴 {{ daysUntilExpiry(barber.subscription_expiry_date) }}d left</span>
+                    <span *ngSwitchCase="'soon'">🟡 {{ daysUntilExpiry(barber.subscription_expiry_date) }}d left</span>
+                    <span *ngSwitchDefault>✓ {{ daysUntilExpiry(barber.subscription_expiry_date) }}d left</span>
+                  </ng-container>
+                </span>
+              </div>
+              <span class="bc-expiry-date" *ngIf="barber.subscription_expiry_date">
+                Expires {{ barber.subscription_expiry_date | date:'d MMM yyyy' }}
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="bc-actions">
+              <button
+                (click)="toggleBarberStatus(barber.id, barber.name, barber.active)"
+                class="bc-btn"
+                [class.bc-btn-deactivate]="barber.active || barber.is_active"
+                [class.bc-btn-activate]="!(barber.active || barber.is_active)"
+              >
+                {{ (barber.active || barber.is_active) ? 'Deactivate' : 'Activate' }}
+              </button>
+              <button (click)="openEditBarberModal(barber)" class="bc-btn bc-btn-edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button (click)="deleteBarber(barber.id, barber.name)" class="bc-btn bc-btn-delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="barbers-empty" *ngIf="filteredBarbers.length === 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:52px;height:52px;opacity:0.3">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+          <p>{{ barberSearch ? 'No barbers match your search.' : 'No barbers found for this filter.' }}</p>
+          <button *ngIf="barberSearch || barberFilter !== 'all'" (click)="barberSearch=''; barberFilter='all'" class="bc-btn bc-btn-edit">Clear Filters</button>
+        </div>
+
+      </section>
+
+
+      <!-- Manage Services Tab -->
+      <section *ngIf="activeTab === 'services'" class="tab-pane fade-in">
+
+        <!-- Services Header -->
+        <div class="barbers-header">
+          <div class="barbers-title-block">
+            <h2 class="barbers-heading">Shop Services</h2>
+            <span class="barbers-count-chip">{{ shopServices.length }} services</span>
+          </div>
+          <button (click)="openServiceModal()" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;vertical-align:middle;margin-right:6px">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add New Service
+          </button>
+        </div>
+
+        <!-- Services explanation note -->
+        <div class="services-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>Services are shared across all barbers in this shop. Adding or removing a service affects all barbers' booking menus automatically.</span>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="service-cards-grid" *ngIf="shopServices.length > 0">
+          <div *ngFor="let svc of shopServices" class="service-mgmt-card" [class.service-inactive]="!svc.is_active">
+            <!-- Status indicator bar -->
+            <div class="svc-status-bar" [class.bar-active]="svc.is_active" [class.bar-inactive]="!svc.is_active"></div>
+
+            <div class="svc-card-body">
+              <div class="svc-card-top">
+                <div class="svc-card-name-block">
+                  <span class="svc-card-name">{{ svc.name }}</span>
+                  <span class="svc-active-badge" [class.badge-on]="svc.is_active" [class.badge-off]="!svc.is_active">
+                    {{ svc.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+                <span class="svc-card-price">{{ svc.base_price | number:'1.0-0' }} <small>DZD</small></span>
+              </div>
+
+              <p class="svc-card-desc" *ngIf="svc.description">{{ svc.description }}</p>
+              <p class="svc-card-desc" *ngIf="!svc.description" style="opacity:0.35">No description provided.</p>
+
+              <div class="svc-card-meta">
+                <span class="svc-meta-chip">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {{ svc.duration_minutes }} min
+                </span>
+              </div>
+
+              <div class="svc-card-actions">
+                <button (click)="openEditServiceModal(svc)" class="bc-btn bc-btn-edit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit
+                </button>
+                <button (click)="toggleService(svc)" class="bc-btn" [class.bc-btn-activate]="!svc.is_active" [class.bc-btn-deactivate]="svc.is_active">
+                  {{ svc.is_active ? 'Deactivate' : 'Activate' }}
+                </button>
+                <button (click)="deleteService(svc.id, svc.name)" class="bc-btn bc-btn-delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="barbers-empty" *ngIf="shopServices.length === 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:52px;height:52px;opacity:0.3">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <p>No services added yet. Click "Add New Service" to get started.</p>
+        </div>
+
+      </section>
+      <section *ngIf="activeTab === 'settings'" class="tab-pane fade-in">
+        <div class="settings-grid">
+          <!-- Subscription card -->
+          <div class="settings-card subscription-card">
+            <div class="card-header-bar">
+              <h3>Shop License & Subscription</h3>
+              <span [class]="shopSettings.isSubscribed ? 'subscription-badge active' : 'subscription-badge cancelled'">
+                {{ shopSettings.isSubscribed ? 'Active Subscription' : 'Deactivated' }}
+              </span>
+            </div>
+            
+            <p class="description">Toggle your shop's booking subscription. Deactivating this means clients will not be able to find your shop or book any appointments with your barbers.</p>
+            
+            <div class="billing-details">
+              <div class="bill-row">
+                <span class="lbl">Plan Type</span>
+                <span class="val">{{ shopSettings.planType }}</span>
+              </div>
+              <div class="bill-row">
+                <span class="lbl">Billing Frequency</span>
+                <span class="val">Monthly</span>
+              </div>
+              <div class="bill-row">
+                <span class="lbl">Next Billing Date</span>
+                <span class="val">{{ shopSettings.nextBillingDate }}</span>
+              </div>
+              <div class="bill-row">
+                <span class="lbl">Amount Due</span>
+                <span class="val">{{ shopSettings.billingAmount }}</span>
+              </div>
+            </div>
+
+            <div class="toggle-action-box">
+              <div class="toggle-text">
+                <h4>Take Shop Offline / Deactivate Subscription</h4>
+                <p>Temporarily deactivate subscription and take shop offline.</p>
+              </div>
+              <div class="toggle-switch-wrapper">
+                <label class="switch">
+                  <input 
+                    type="checkbox" 
+                    [checked]="shopSettings.isSubscribed" 
+                    (change)="toggleShopSubscriptionStatus()"
+                  >
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick instructions card -->
+          <div class="settings-card help-card">
+            <h3>License Terms</h3>
+            <p>Every active barber requires a valid license verification. Active subscriptions permit unlimited bookings, customized schedule lists, and full analytics logs.</p>
+            <div class="tips-box">
+              <div class="tip-item">
+                <svg class="tip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Toggling your shop offline updates all listing feeds in real time.
+              </div>
+              <div class="tip-item">
+                <svg class="tip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Inactive barbers are locked from scheduling sheets instantly.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Activate Barber Modal -->
+  <div *ngIf="activationModalOpen" class="modal-overlay">
+    <div class="modal-container glass-morphic fade-in">
+      <div class="modal-header">
+        <h3>Activate Barber - Choose Subscription</h3>
+        <button (click)="closeActivationModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div *ngIf="activationBarber" class="modal-body">
+        <p class="activation-info">Activating <strong>{{ activationBarber.name }}</strong>. Please select a subscription type to set the end date.</p>
+
+        <div class="form-group">
+          <label for="act-sub">Subscription Type</label>
+          <select id="act-sub" [(ngModel)]="activationSubscriptionType" name="activation_subscription_type">
+            <option value="monthly">Monthly (1 Month)</option>
+            <option value="quarterly">Quarterly (3 Months)</option>
+            <option value="yearly">Yearly (12 Months)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" (click)="closeActivationModal()" class="btn btn-secondary">Cancel</button>
+        <button type="button" (click)="confirmActivation()" class="btn btn-primary">Activate & Set Subscription</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Barber Modal -->
+  <div *ngIf="barberModalOpen" class="modal-overlay">
+    <div class="modal-container glass-morphic fade-in">
+      <div class="modal-header">
+        <h3>Register New Barber</h3>
+        <button (click)="closeBarberModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div *ngIf="barberError" class="alert alert-danger">
+        {{ barberError }}
+      </div>
+
+      <form (ngSubmit)="submitBarber()">
+        <div class="form-group">
+          <label for="b-name">Full Name</label>
+          <input 
+            type="text" 
+            id="b-name" 
+            [(ngModel)]="newBarber.name" 
+            name="name" 
+            placeholder="e.g. Jean Larson"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="b-email">Business Email (Optional)</label>
+          <input 
+            type="email" 
+            id="b-email" 
+            [(ngModel)]="newBarber.email" 
+            name="email" 
+            placeholder="e.g. jean@barberbook.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="b-phone">Phone Number (Optional)</label>
+          <input 
+            type="text" 
+            id="b-phone" 
+            [(ngModel)]="newBarber.phone" 
+            name="phone" 
+            placeholder="e.g. +1 555-0102"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="b-spec">Specialization</label>
+            <select id="b-spec" [(ngModel)]="newBarber.specialization" name="specialization">
+              <option value="Haircut & Styling">Haircut & Styling</option>
+              <option value="Beard Grooming">Beard Grooming</option>
+              <option value="Shave & Facial">Shave & Facial</option>
+              <option value="Complete Grooming Package">Complete Package</option>
+            </select>
+          </div>
+
+          <div class="form-group half">
+            <label for="b-exp">Experience</label>
+            <select id="b-exp" [(ngModel)]="newBarber.experience" name="experience">
+              <option value="1 year">1 Year</option>
+              <option value="3 years">3 Years</option>
+              <option value="5 years">5 Years</option>
+              <option value="8 years">8 Years</option>
+              <option value="10+ years">10+ Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="b-sub">Subscription Type</label>
+          <select id="b-sub" [(ngModel)]="newBarber.subscription_type" (change)="onSubscriptionTypeChange()" name="subscription_type">
+            <option value="">No Subscription</option>
+            <option value="monthly">Monthly (1 Month) - 49.00 DT</option>
+            <option value="quarterly">Quarterly (3 Months) - 130.00 DT</option>
+            <option value="yearly">Yearly (12 Months) - 480.00 DT</option>
+          </select>
+        </div>
+
+        <div *ngIf="calculatedEndDate" class="form-group end-date-display">
+          <label>Subscription End Date</label>
+          <div class="end-date-value">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>{{ calculatedEndDate }}</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeBarberModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Barber Modal -->
+  <div *ngIf="editBarberModalOpen" class="modal-overlay">
+    <div class="modal-container glass-morphic fade-in">
+      <div class="modal-header">
+        <h3>Edit Barber Profile</h3>
+        <button (click)="closeEditBarberModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div *ngIf="editBarberError" class="alert alert-danger">
+        {{ editBarberError }}
+      </div>
+
+      <form (ngSubmit)="submitEditBarber()">
+        <div class="form-group">
+          <label for="e-name">Full Name</label>
+          <input 
+            type="text" 
+            id="e-name" 
+            [(ngModel)]="editBarber.name" 
+            name="edit_name" 
+            placeholder="e.g. Jean Larson"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="e-email">Business Email (Optional)</label>
+          <input 
+            type="email" 
+            id="e-email" 
+            [(ngModel)]="editBarber.email" 
+            name="edit_email" 
+            placeholder="e.g. jean@barberbook.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="e-phone">Phone Number (Optional)</label>
+          <input 
+            type="text" 
+            id="e-phone" 
+            [(ngModel)]="editBarber.phone" 
+            name="edit_phone" 
+            placeholder="e.g. +1 555-0102"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="e-spec">Specialization</label>
+            <select id="e-spec" [(ngModel)]="editBarber.specialization" name="edit_specialization">
+              <option value="Haircut & Styling">Haircut & Styling</option>
+              <option value="Beard Grooming">Beard Grooming</option>
+              <option value="Shave & Facial">Shave & Facial</option>
+              <option value="Complete Grooming Package">Complete Package</option>
+            </select>
+          </div>
+
+          <div class="form-group half">
+            <label for="e-exp">Experience</label>
+            <select id="e-exp" [(ngModel)]="editBarber.experience" name="edit_experience">
+              <option value="1 year">1 Year</option>
+              <option value="3 years">3 Years</option>
+              <option value="5 years">5 Years</option>
+              <option value="8 years">8 Years</option>
+              <option value="10+ years">10+ Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="e-sub">Subscription Type</label>
+          <select id="e-sub" [(ngModel)]="editBarber.subscription_type" (change)="onEditSubscriptionTypeChange()" name="edit_subscription_type">
+            <option value="">No Subscription</option>
+            <option value="monthly">Monthly (1 Month) - 49.00 DT</option>
+            <option value="quarterly">Quarterly (3 Months) - 130.00 DT</option>
+            <option value="yearly">Yearly (12 Months) - 480.00 DT</option>
+          </select>
+        </div>
+
+        <div *ngIf="editCalculatedEndDate" class="form-group end-date-display">
+          <label>Subscription End Date</label>
+          <div class="end-date-value">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>{{ editCalculatedEndDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeEditBarberModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add / Edit Service Modal -->
+  <div *ngIf="serviceModalOpen" class="modal-overlay">
+    <div class="modal-container glass-morphic fade-in">
+      <div class="modal-header">
+        <h3>{{ editingService ? 'Edit Service' : 'Add New Service' }}</h3>
+        <button (click)="closeServiceModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div *ngIf="serviceError" class="alert alert-danger">{{ serviceError }}</div>
+
+      <form (ngSubmit)="submitService()">
+        <div class="form-group">
+          <label for="svc-name">Service Name *</label>
+          <input type="text" id="svc-name" [(ngModel)]="newService.name" name="svc_name" placeholder="e.g. Classic Haircut" required />
+        </div>
+
+        <div class="form-group">
+          <label for="svc-desc">Description (Optional)</label>
+          <textarea id="svc-desc" [(ngModel)]="newService.description" name="svc_description" placeholder="Brief description of the service…" rows="3" style="resize:vertical"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="svc-price">Price (DZD) *</label>
+            <input type="number" id="svc-price" [(ngModel)]="newService.base_price" name="svc_price" placeholder="e.g. 500" min="0" step="50" required />
+          </div>
+          <div class="form-group half">
+            <label for="svc-dur">Duration (minutes) *</label>
+            <input type="number" id="svc-dur" [(ngModel)]="newService.duration_minutes" name="svc_duration" placeholder="e.g. 30" min="5" step="5" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeServiceModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ editingService ? 'Save Changes' : 'Add Service' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

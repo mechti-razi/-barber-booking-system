@@ -1,0 +1,257 @@
+<div class="page-wrap" *ngIf="!loading; else loader">
+
+  <div class="error-banner" *ngIf="errorMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <ng-container *ngIf="!errorMessage">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">{{ 'barber.staff.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'barber.staff.subtitle' | translate }}</p>
+      </div>
+      <button class="hire-btn" (click)="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>{{ 'barber.staff.hireStaff' | translate }}</span>
+      </button>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-total">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        <div><span class="kpi-label">{{ 'barber.staff.totalStaff' | translate }}</span><span class="kpi-value">{{ totalStaffCount }}</span></div>
+      </div>
+      <div class="kpi-card kpi-active">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:22px;height:22px;"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div><span class="kpi-label">{{ 'barber.staff.active' | translate }}</span><span class="kpi-value">{{ activeStaffCount }}</span></div>
+      </div>
+      <div class="kpi-card kpi-rating">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+        <div><span class="kpi-label">{{ 'barber.staff.avgRating' | translate }}</span><span class="kpi-value">{{ averageRating }}</span></div>
+      </div>
+    </div>
+
+    <!-- Staff Cards Grid -->
+    <div class="staff-grid" *ngIf="staff.length > 0; else empty">
+      <div class="staff-card" *ngFor="let member of staff" [class.inactive-card]="!member.is_active">
+        <div class="staff-card-header">
+          <div class="staff-avatar-wrap">
+            <div class="avatar-lg">{{ member.name[0]?.toUpperCase() || '?' }}</div>
+            <span class="avatar-status-dot" [class.dot-active]="member.is_active" [class.dot-inactive]="!member.is_active"></span>
+          </div>
+          <div class="staff-header-info">
+            <h3 class="staff-name">{{ member.name }}</h3>
+            <span class="staff-role">{{ member.specialization || 'General Barber' }}</span>
+          </div>
+          <div class="badge" [class.badge-active]="member.is_active" [class.badge-inactive]="!member.is_active">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:7px;height:7px;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle></svg>
+            {{ member.is_active ? ('barber.staff.active' | translate) : ('common.inactive' | translate) }}
+          </div>
+        </div>
+
+        <div class="staff-card-body">
+          <div class="staff-info-strip">
+            <div class="info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span>{{ member.experience_years }} yr{{ member.experience_years !== 1 ? 's' : '' }}</span></div>
+            <div class="info-chip chip-gold"><svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>{{ member.rating || '—' }}</span></div>
+            <div class="info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>{{ member.joined_at }}</span></div>
+          </div>
+          <p class="staff-bio" *ngIf="member.bio">{{ member.bio }}</p>
+          <p class="staff-bio empty-bio" *ngIf="!member.bio">{{ 'barber.staff.noBio' | translate }}</p>
+          <div class="contact-info">
+            <div class="contact-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>{{ member.email }}</span></div>
+            <div class="contact-chip" *ngIf="member.phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.21 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg><span>{{ member.phone }}</span></div>
+          </div>
+        </div>
+
+        <div class="staff-card-stats-action">
+          <button class="stats-btn" (click)="viewStaffDetails(member)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            {{ 'barber.staff.performanceCalendar' | translate }}
+          </button>
+        </div>
+
+        <div class="staff-card-actions">
+          <div class="toggle-control">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--text-muted);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span>{{ 'common.available' | translate }}</span>
+            <label class="switch"><input type="checkbox" [checked]="member.is_active" (change)="toggleActive(member)"><span class="slider round"></span></label>
+          </div>
+          <button class="remove-btn" *ngIf="member.is_active" (click)="removeStaff(member.id)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            {{ 'barber.staff.deactivate' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <ng-template #empty>
+      <div class="empty-state">
+        <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:56px;height:56px;color:#6b7280;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        <h3>{{ 'barber.staff.noStaff' | translate }}</h3>
+        <p>{{ 'barber.staff.noStaffDesc' | translate }}</p>
+      </div>
+    </ng-template>
+
+    <!-- Hire Staff Modal -->
+    <div class="modal-overlay" *ngIf="modalOpen" (click)="closeModal()">
+      <div class="modal hire-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="hire-modal-title">
+            <div class="hire-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></div>
+            <div>
+              <h3>{{ 'barber.staff.hireModal.title' | translate }}</h3>
+              <p class="hire-modal-sub">{{ 'barber.staff.hireModal.subtitle' | translate }}</p>
+            </div>
+          </div>
+          <button class="modal-close" (click)="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+
+        <div class="hire-alert hire-alert-success" *ngIf="successMessage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg>{{ successMessage }}</div>
+        <div class="hire-alert hire-alert-error" *ngIf="errorMessage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>{{ errorMessage }}</div>
+
+        <div class="modal-body">
+          <form (ngSubmit)="hireStaff()" #staffForm="ngForm">
+            <div class="hire-grid">
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.name' | translate }} *</label>
+                <input type="text" name="name" [(ngModel)]="newStaff.name" required placeholder="John Doe">
+                <span class="error-msg" *ngIf="formErrors['name']">{{ formErrors['name'][0] }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.email' | translate }} *</label>
+                <input type="email" name="email" [(ngModel)]="newStaff.email" required placeholder="john@example.com">
+                <span class="error-msg" *ngIf="formErrors['email']">{{ formErrors['email'][0] }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.phone' | translate }}</label>
+                <input type="text" name="phone" [(ngModel)]="newStaff.phone" placeholder="+216 XX XXX XXX">
+                <span class="error-msg" *ngIf="formErrors['phone']">{{ formErrors['phone'][0] }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.password' | translate }} *</label>
+                <input type="password" name="password" [(ngModel)]="newStaff.password" required minlength="8" [placeholder]="'barber.staff.hireModal.passwordPlaceholder' | translate">
+                <span class="error-msg" *ngIf="formErrors['password']">{{ formErrors['password'][0] }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.specialization' | translate }}</label>
+                <input type="text" name="specialization" [(ngModel)]="newStaff.specialization" [placeholder]="'barber.staff.hireModal.specializationPlaceholder' | translate">
+                <span class="error-msg" *ngIf="formErrors['specialization']">{{ formErrors['specialization'][0] }}</span>
+              </div>
+              <div class="form-group">
+                <label>{{ 'barber.staff.hireModal.experience' | translate }}</label>
+                <input type="number" name="experience" [(ngModel)]="newStaff.experience_years" min="0" placeholder="0">
+                <span class="error-msg" *ngIf="formErrors['experience_years']">{{ formErrors['experience_years'][0] }}</span>
+              </div>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="submitting">{{ 'barber.staff.hireModal.cancel' | translate }}</button>
+              <button type="submit" class="btn-primary" [disabled]="!staffForm.valid || submitting">
+                <ng-container *ngIf="!submitting">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  {{ 'barber.staff.hireModal.hireStylist' | translate }}
+                </ng-container>
+                <span *ngIf="submitting" class="btn-loader"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Modal -->
+    <div class="modal-overlay" *ngIf="detailsModalOpen" (click)="closeDetailsModal()">
+      <div class="modal modal-lg" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title-row">
+              <h3>{{ selectedStaffPerformance?.profile?.name }}</h3>
+              <span class="badge" [class.badge-active]="selectedStaffPerformance?.profile?.is_active" [class.badge-inactive]="!selectedStaffPerformance?.profile?.is_active">
+                {{ selectedStaffPerformance?.profile?.is_active ? ('barber.staff.active' | translate) : ('common.inactive' | translate) }}
+              </span>
+            </div>
+            <p class="modal-header-meta">{{ selectedStaffPerformance?.profile?.specialization || 'Stylist' }}</p>
+          </div>
+          <button class="modal-close" (click)="closeDetailsModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+
+        <div class="modal-body loading-spinner-wrap" *ngIf="loadingPerformance">
+          <div class="spin"></div>
+          <p>{{ 'barber.staff.performance.loadingStats' | translate }}</p>
+        </div>
+
+        <div class="modal-body" *ngIf="!loadingPerformance && selectedStaffPerformance">
+          <p class="section-title-sm">{{ 'barber.staff.performance.title' | translate }}</p>
+          <div class="perf-kpi-grid">
+            <div class="perf-kpi-card"><span class="perf-kpi-label">{{ 'barber.staff.performance.today' | translate }}</span><span class="perf-kpi-val text-amber">{{ selectedStaffPerformance.earnings.today }} DT</span></div>
+            <div class="perf-kpi-card"><span class="perf-kpi-label">{{ 'barber.staff.performance.week' | translate }}</span><span class="perf-kpi-val text-amber">{{ selectedStaffPerformance.earnings.week }} DT</span></div>
+            <div class="perf-kpi-card"><span class="perf-kpi-label">{{ 'barber.staff.performance.month' | translate }}</span><span class="perf-kpi-val text-amber">{{ selectedStaffPerformance.earnings.month }} DT</span></div>
+            <div class="perf-kpi-card"><span class="perf-kpi-label">{{ 'barber.staff.performance.allTime' | translate }}</span><span class="perf-kpi-val text-amber">{{ selectedStaffPerformance.earnings.all_time }} DT</span></div>
+          </div>
+
+          <div class="perf-tabs">
+            <button class="perf-tab-btn" [class.active]="activeDetailsTab === 'agenda'" (click)="activeDetailsTab = 'agenda'">{{ 'barber.staff.performance.agendaTab' | translate }}</button>
+            <button class="perf-tab-btn" [class.active]="activeDetailsTab === 'schedule'" (click)="activeDetailsTab = 'schedule'">{{ 'barber.staff.performance.scheduleTab' | translate }}</button>
+          </div>
+
+          <div class="perf-tab-content" *ngIf="activeDetailsTab === 'agenda'">
+            <div class="calendar-split-container">
+              <div class="calendar-panel">
+                <div class="calendar-header-nav">
+                  <button type="button" class="cal-nav-btn" (click)="prevMonth()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                  <span class="cal-month-title">{{ getMonthName() }}</span>
+                  <button type="button" class="cal-nav-btn" (click)="nextMonth()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                </div>
+                <div class="calendar-weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+                <div class="calendar-grid">
+                  <button type="button" *ngFor="let day of calendarDays" class="calendar-day-cell"
+                    [class.other-month]="!day.isCurrentMonth" [class.is-today]="day.isToday"
+                    [class.is-selected]="day.dateStr === selectedCalendarDateStr" [class.has-appts]="day.appointments.length > 0"
+                    (click)="selectCalendarDay(day)">
+                    <span class="day-number">{{ day.dayNum }}</span>
+                    <span class="appt-dot" *ngIf="day.appointments.length > 0"></span>
+                  </button>
+                </div>
+              </div>
+              <div class="agenda-panel">
+                <h5 class="agenda-day-header">{{ selectedCalendarDateStr }}</h5>
+                <div class="day-appointments-wrap" *ngIf="selectedDateAppointments.length > 0; else noDayAppts">
+                  <div class="appt-detail-card" *ngFor="let appt of selectedDateAppointments">
+                    <div class="appt-detail-time">{{ appt.time }}</div>
+                    <div class="appt-detail-info"><div class="appt-detail-client">{{ appt.client_name }}</div><div class="appt-detail-service">{{ appt.service_name }}</div></div>
+                    <div class="appt-detail-meta"><div class="appt-detail-price">{{ appt.price }} DT</div><span class="appt-status-badge status-{{ appt.status }}">{{ appt.status }}</span></div>
+                  </div>
+                </div>
+                <ng-template #noDayAppts>
+                  <div class="empty-day-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.3;margin-bottom:8px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <p>{{ 'barber.staff.performance.noAppts' | translate }}</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <div class="perf-tab-content" *ngIf="activeDetailsTab === 'schedule'">
+            <div class="schedule-days-list">
+              <div class="schedule-day-row" *ngFor="let day of selectedStaffPerformance.schedule">
+                <span class="day-name">{{ getDayName(day.day_of_week) }}</span>
+                <div *ngIf="day.is_available"><span class="time-badge">{{ day.start_time }} – {{ day.end_time }}</span></div>
+                <div *ngIf="!day.is_available"><span class="unavailable-badge">{{ 'barber.staff.performance.offDuty' | translate }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
+
+<ng-template #loader>
+  <div class="page-loader"><div class="spin"></div><p>{{ 'common.loading' | translate }}</p></div>
+</ng-template>

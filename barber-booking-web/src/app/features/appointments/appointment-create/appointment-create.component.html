@@ -1,0 +1,380 @@
+<div class="page">
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header class="page-header">
+    <button class="back-btn" (click)="cancel()" aria-label="Go back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <div>
+      <p class="header-eyebrow">{{ 'appointmentCreate.eyebrow' | translate }}</p>
+      <h1 class="header-title">{{ 'appointmentCreate.title' | translate }}</h1>
+    </div>
+    <div style="width:38px"></div>
+  </header>
+
+  <!-- ── Step indicators ─────────────────────────────────── -->
+  <div class="steps-bar">
+    <div class="step-dot" [class.done]="f['shop_id'].value"
+                          [class.active]="!f['shop_id'].value"><span>1</span></div>
+    <div class="step-line" [class.filled]="f['shop_id'].value"></div>
+    <div class="step-dot" [class.done]="f['barber_id'].value && f['service_id'].value"
+                          [class.active]="f['shop_id'].value && !(f['barber_id'].value && f['service_id'].value)"><span>2</span></div>
+    <div class="step-line" [class.filled]="f['barber_id'].value && f['service_id'].value"></div>
+    <div class="step-dot" [class.done]="f['appointment_date'].value && f['appointment_time'].value"
+                          [class.active]="f['barber_id'].value && f['service_id'].value && !f['appointment_time'].value"><span>3</span></div>
+    <div class="step-line" [class.filled]="f['appointment_date'].value && f['appointment_time'].value"></div>
+    <div class="step-dot" [class.active]="f['appointment_date'].value && f['appointment_time'].value"><span>4</span></div>
+  </div>
+
+  <!-- ── Body ────────────────────────────────────────────── -->
+  <div class="page-body">
+
+    <!-- Loading indicator -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-spinner"></div>
+      <p>{{ 'appointmentCreate.loading' | translate }}</p>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <!-- Show form even if no shops loaded (fallback) -->
+    <div class="alert alert-warning" *ngIf="!loading && shops.length === 0">
+      {{ 'appointmentCreate.noShops' | translate }}
+    </div>
+
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- ══ STEP 1: Shop ════════════════════════════════ -->
+      <div class="form-section" *ngIf="!isBarber">
+        <div class="form-section-label">
+          <span class="step-dot">1</span>
+          <span class="step-title-text">{{ 'appointmentCreate.steps.1' | translate }}</span>
+          <span class="step-line"></span>
+        </div>
+        <!-- Shop cards -->
+        <div class="shop-cards">
+          <button type="button" class="shop-card"
+                  *ngFor="let s of shops"
+                  [class.selected]="f['shop_id'].value == s.id"
+                  (click)="onShopChange(s.id); appointmentForm.patchValue({shop_id: s.id})">
+            <!-- Left: logo image -->
+            <div class="shop-card-img-wrap">
+              <img [src]="s.logo_url || 'assets/images/default-shop.png'" [alt]="s.name" class="shop-card-img" />
+            </div>
+            <!-- Middle: info -->
+            <div class="shop-card-info">
+              <span class="shop-card-name">{{ s.name }}</span>
+              <span class="shop-card-addr" *ngIf="s.address">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                {{ s.address }}
+              </span>
+              <span class="shop-card-meta">
+                <span>{{ s.barbers?.length || 0 }} barbers</span>
+                <span class="dot-sep">·</span>
+                <span>{{ s.services?.length || 0 }} services</span>
+              </span>
+            </div>
+            <!-- Right: check or open dot -->
+            <div class="shop-card-right">
+          <span class="shop-open-badge" [class.open]="s.active">{{ s.active ? ('appointmentCreate.openClosed.open' | translate) : ('appointmentCreate.openClosed.closed' | translate) }}</span>
+              <svg *ngIf="f['shop_id'].value == s.id" class="shop-card-check"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+          </button>
+        </div>
+        <p class="field-error" *ngIf="f['shop_id'].invalid && f['shop_id'].touched">
+          Please select a shop
+        </p>
+      </div>
+
+      <div class="form-section" *ngIf="isBarber">
+        <div class="form-section-label">
+          <span class="step-dot">1</span>
+          <span class="step-title-text">{{ 'appointmentCreate.yourShop' | translate }}</span>
+          <span class="step-line"></span>
+        </div>
+        <div class="shop-cards" *ngIf="selectedShop">
+          <div class="shop-card selected" style="cursor: default; pointer-events: none;">
+            <!-- Left: logo image -->
+            <div class="shop-card-img-wrap">
+              <img [src]="selectedShop.logo_url || 'assets/images/default-shop.png'" [alt]="selectedShop.name" class="shop-card-img" />
+            </div>
+            <!-- Middle: info -->
+            <div class="shop-card-info">
+              <span class="shop-card-name">{{ selectedShop.name }}</span>
+              <span class="shop-card-addr" *ngIf="selectedShop.address">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                {{ selectedShop.address }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="shop-cards" *ngIf="!selectedShop">
+          <div class="shop-card" style="cursor: default; opacity: 0.7;">
+            <div class="shop-card-info">
+              <span class="shop-card-name">Loading shop information...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ STEP 2: Barber + Service ════════════════════ -->
+      <ng-container *ngIf="selectedShop">
+        <div class="form-section">
+        <div class="form-section-label">
+          <span class="step-dot">2</span>
+          <span class="step-title-text">{{ 'appointmentCreate.steps.2' | translate }}</span>
+          <span class="step-line"></span>
+        </div>
+
+          <!-- Barber pills -->
+          <p class="sub-label">{{ 'appointmentCreate.barber' | translate }}</p>
+          <div class="barber-pills">
+            <button type="button" class="barber-pill"
+                    *ngFor="let b of selectedShop.barbers"
+                    [class.selected]="f['barber_id'].value == b.id"
+                    (click)="selectBarber(b)">
+              <div class="pill-avatar">
+                {{ (b.user?.name || b.name || '?').charAt(0).toUpperCase() }}
+              </div>
+              <div class="pill-info">
+                <span class="pill-name">{{ b.user?.name || b.name }}</span>
+                <span class="pill-spec" *ngIf="b.specialization">{{ b.specialization }}</span>
+                <!-- Work days hint -->
+                <span class="pill-days" *ngIf="b.schedule">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  {{ workDaysLabel(b.schedule) }}
+                </span>
+              </div>
+              <svg *ngIf="f['barber_id'].value == b.id" class="pill-check"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+          <p class="field-error" *ngIf="f['barber_id'].invalid && f['barber_id'].touched">{{ 'appointmentCreate.errors.selectBarber' | translate }}</p>
+
+          <!-- Service cards -->
+          <p class="sub-label" style="margin-top:16px">{{ 'appointmentCreate.service' | translate }}</p>
+          <div class="service-cards">
+            <button type="button" class="service-card"
+                    *ngFor="let svc of selectedShop.services"
+                    [class.selected]="f['service_id'].value == svc.id"
+                    (click)="selectService(svc)">
+              <div class="svc-left">
+                <p class="svc-name">{{ svc.name }}</p>
+                <p class="svc-desc" *ngIf="svc.description">{{ svc.description }}</p>
+                <p class="svc-dur" *ngIf="svc.duration_minutes">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {{ svc.duration_minutes }} min
+                </p>
+              </div>
+              <div class="svc-right">
+                <span class="svc-price">{{ svc.base_price }}<small> DT</small></span>
+                <svg *ngIf="f['service_id'].value == svc.id" class="svc-check"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+            </button>
+          </div>
+          <p class="field-error" *ngIf="f['service_id'].invalid && f['service_id'].touched">{{ 'appointmentCreate.errors.selectService' | translate }}</p>
+        </div>
+      </ng-container>
+
+      <!-- ══ STEP 3: Date + Time slot picker ═════════════ -->
+      <div class="form-section" *ngIf="f['barber_id'].value && f['service_id'].value">
+        <div class="form-section-label">
+          <span class="step-dot">3</span>
+          <span class="step-title-text">{{ 'appointmentCreate.steps.3' | translate }}</span>
+          <span class="step-line"></span>
+        </div>
+
+        <!-- Schedule hint -->
+        <div class="schedule-hint" *ngIf="selectedBarber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Works {{ workDaysLabel(selectedBarber.schedule || selectedBarber) }}
+          <ng-container *ngIf="selectedBarber.schedule">
+            &nbsp;·&nbsp;
+            {{ selectedBarber.schedule.startHour }}:00 – {{ selectedBarber.schedule.endHour }}:00
+          </ng-container>
+        </div>
+
+        <!-- ── Calendar week picker ── -->
+        <div class="calendar-header">
+          <button type="button" class="cal-nav" (click)="prevWeek()" [disabled]="!canGoPrev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <span class="cal-week-label">{{ weekLabel }}</span>
+          <button type="button" class="cal-nav" (click)="nextWeek()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="day-row" *ngFor="let week of calendarWeeks">
+          <button type="button" class="day-cell"
+                  *ngFor="let cell of week"
+                  [class.day-available]="cell.available"
+                  [class.day-past]="cell.isPast"
+                  [class.day-today]="cell.isToday"
+                  [class.day-selected]="cell.date === selectedDate"
+                  [class.day-unavailable]="!cell.available && !cell.isPast"
+                  [disabled]="!cell.available"
+                  (click)="selectDay(cell)">
+            <span class="day-name">{{ cell.dayName }}</span>
+            <span class="day-num">{{ cell.dayNum }}</span>
+            <span class="day-dot" *ngIf="cell.available && !cell.isPast"></span>
+          </button>
+        </div>
+
+        <p class="field-error" *ngIf="f['appointment_date'].invalid && f['appointment_date'].touched">
+          Please select a date
+        </p>
+
+        <!-- ── Time slot grid ── -->
+        <ng-container *ngIf="selectedDate">
+          <div class="slot-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>{{ selectedDateLabel }}</span>
+            <span class="slot-avail-count" *ngIf="!loadingSlots">{{ availableSlotCount }} {{ 'appointmentCreate.slotsAvailable' | translate }}</span>
+          </div>
+
+          <!-- Loading slots -->
+          <div class="slots-loading" *ngIf="loadingSlots">
+            <div class="slot-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
+          </div>
+
+          <!-- Slot grid -->
+          <div class="slot-grid" *ngIf="!loadingSlots && allSlots.length > 0">
+            <button type="button" class="slot-btn"
+                    *ngFor="let slot of allSlots"
+                    [class.slot-available]="!slot.booked && !slot.past"
+                    [class.slot-booked]="slot.booked"
+                    [class.slot-past]="slot.past && !slot.booked"
+                    [class.slot-selected]="slot.time === selectedTime"
+                    [disabled]="slot.booked || slot.past"
+                    (click)="selectSlot(slot)">
+              {{ slot.label }}
+              <span class="slot-tag" *ngIf="slot.booked">Booked</span>
+            </button>
+          </div>
+
+          <div class="no-slots" *ngIf="!loadingSlots && allSlots.length === 0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            {{ 'appointmentCreate.noSlots' | translate }}
+          </div>
+        </ng-container>
+
+        <p class="field-error" *ngIf="f['appointment_time'].invalid && f['appointment_time'].touched">
+          Please select a time slot
+        </p>
+      </div>
+
+      <!-- ══ STEP 4: Notes + Summary + Submit ════════════ -->
+      <div class="form-section" *ngIf="f['appointment_date'].value && f['appointment_time'].value">
+        <div class="form-section-label">
+          <span class="step-dot">4</span>
+          <span class="step-title-text">{{ 'appointmentCreate.steps.4' | translate }}</span>
+          <span class="step-line"></span>
+        </div>
+
+        <!-- Client Info Form (Barber only) -->
+        <div class="client-info-fields" *ngIf="isBarber" style="margin-bottom: 24px;">
+          <p class="sub-label" style="margin-bottom:12px; color:#d4af37; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-size:11px;">{{ 'appointmentCreate.clientInfo' | translate }}</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="field-wrap" style="margin: 0;">
+              <label class="field-label">{{ 'appointmentCreate.firstName' | translate }} <span class="required" style="color:#f87171;">*</span></label>
+              <input type="text" formControlName="client_first_name" [placeholder]="'appointmentCreate.firstName' | translate" class="styled-input" style="padding-left:14px;">
+              <p class="field-error" *ngIf="f['client_first_name'].invalid && f['client_first_name'].touched">{{ 'appointmentCreate.errors.firstNameRequired' | translate }}</p>
+            </div>
+            <div class="field-wrap" style="margin: 0;">
+              <label class="field-label">{{ 'appointmentCreate.lastName' | translate }} <span class="required" style="color:#f87171;">*</span></label>
+              <input type="text" formControlName="client_last_name" [placeholder]="'appointmentCreate.lastName' | translate" class="styled-input" style="padding-left:14px;">
+              <p class="field-error" *ngIf="f['client_last_name'].invalid && f['client_last_name'].touched">{{ 'appointmentCreate.errors.lastNameRequired' | translate }}</p>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="field-wrap" style="margin: 0;">
+              <label class="field-label">{{ 'appointmentCreate.phone' | translate }} <span class="required" style="color:#f87171;">*</span></label>
+              <input type="tel" formControlName="client_phone" [placeholder]="'appointmentCreate.phone' | translate" class="styled-input" style="padding-left:14px;">
+              <p class="field-error" *ngIf="f['client_phone'].invalid && f['client_phone'].touched">{{ 'appointmentCreate.errors.phoneRequired' | translate }}</p>
+            </div>
+            <div class="field-wrap" style="margin: 0;">
+              <label class="field-label">{{ 'appointmentCreate.email' | translate }} <span class="optional">({{ 'appointmentCreate.notesOptional' | translate }})</span></label>
+              <input type="email" formControlName="client_email" [placeholder]="'appointmentCreate.email' | translate" class="styled-input" style="padding-left:14px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="field-wrap">
+          <label class="field-label" for="notes">{{ 'appointmentCreate.notes' | translate }} <span class="optional">{{ 'appointmentCreate.notesOptional' | translate }}</span></label>
+          <div class="input-wrap textarea-wrap">
+            <svg class="input-icon" style="top:14px;transform:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <textarea id="notes" formControlName="notes" rows="3" [placeholder]="'appointmentCreate.notesPlaceholder' | translate" class="styled-input styled-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="summary-card" *ngIf="selectedService">
+          <p class="summary-title">{{ 'appointmentCreate.bookingSummary' | translate }}</p>
+          <div class="summary-rows">
+            <div class="summary-row"><span class="sr-label">{{ 'appointmentCreate.summaryFields.service' | translate }}</span><span class="sr-val">{{ selectedService.name }}</span></div>
+            <div class="summary-row" *ngIf="selectedBarber"><span class="sr-label">{{ 'appointmentCreate.summaryFields.barber' | translate }}</span><span class="sr-val">{{ selectedBarber.user?.name || selectedBarber.name }}</span></div>
+            <div class="summary-row"><span class="sr-label">{{ 'appointmentCreate.summaryFields.date' | translate }}</span><span class="sr-val">{{ selectedDateLabel }}</span></div>
+            <div class="summary-row"><span class="sr-label">{{ 'appointmentCreate.summaryFields.time' | translate }}</span><span class="sr-val">{{ selectedTimeLabel }}</span></div>
+            <div class="summary-row" *ngIf="selectedService.duration_minutes"><span class="sr-label">{{ 'appointmentCreate.summaryFields.duration' | translate }}</span><span class="sr-val">{{ selectedService.duration_minutes }} {{ 'appointmentCreate.min' | translate }}</span></div>
+            <div class="summary-row summary-total">
+              <span class="sr-label">{{ 'appointmentCreate.summaryFields.total' | translate }}</span>
+              <span class="sr-price">{{ selectedService.base_price }} DT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="submit-btn" [disabled]="loading || appointmentForm.invalid">
+          <svg *ngIf="!loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <div *ngIf="loading" class="btn-spinner"></div>
+          {{ loading ? ('appointmentCreate.booking' | translate) : ('appointmentCreate.confirmBooking' | translate) }}
+        </button>
+      </div><!-- /form-section step 4 -->
+
+    </form>
+  </div><!-- /page-body -->
+</div>

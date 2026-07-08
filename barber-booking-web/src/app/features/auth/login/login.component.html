@@ -1,0 +1,143 @@
+<div class="auth-container auth-login">
+  <div class="auth-shell">
+
+    <!-- Left branding panel -->
+    <section class="auth-visual-panel">
+      <div class="brand-logo">
+        <div class="logo-icon-wrap">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16"/>
+            <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12"/>
+            <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <p class="brand-kicker">Barber booking</p>
+          <h1>Barber<span class="accent">Book</span></h1>
+        </div>
+      </div>
+
+      <p class="hero-copy">
+        Sign in to manage your appointments, check barber availability, and keep everything in one place.
+      </p>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num">500+</span>
+          <span class="stat-label">Barbers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">12k+</span>
+          <span class="stat-label">Bookings</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">4.9★</span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <span>⚡ Fast sign in</span>
+        <span>📅 Live availability</span>
+        <span>🔒 Secure</span>
+      </div>
+    </section>
+
+    <!-- Right form panel -->
+    <section class="auth-form-panel">
+      <div class="auth-card">
+
+        <div class="card-header">
+          <span class="card-kicker">{{ 'auth.login.kicker' | translate }}</span>
+          <h2>{{ 'auth.login.title' | translate }}</h2>
+          <p>{{ 'auth.login.subtitle' | translate }}</p>
+        </div>
+
+        <!-- ── Generic error alert ── -->
+        <div *ngIf="error && errorType === 'generic'" class="alert alert-error" role="alert">
+          <div class="alert-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+          <div class="alert-content">{{ error }}</div>
+        </div>
+
+        <!-- ── Subscription expired alert ── -->
+        <div *ngIf="error && errorType === 'subscription_expired'" class="alert alert-expired" role="alert">
+          <div class="alert-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="alert-content">
+            <span class="alert-title">{{ 'auth.login.alerts.subscriptionExpired' | translate }}</span>
+            <span class="alert-desc">{{ error }}</span>
+          </div>
+        </div>
+
+        <!-- ── Account deactivated alert ── -->
+        <div *ngIf="error && errorType === 'account_deactivated'" class="alert alert-deactivated" role="alert">
+          <div class="alert-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="alert-content">
+            <span class="alert-title">{{ 'auth.login.alerts.accountDeactivated' | translate }}</span>
+            <span class="alert-desc">{{ error }}</span>
+          </div>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="form-group" [class.has-error]="submitted && f['email'].invalid">
+            <label for="email">{{ 'auth.login.email' | translate }}</label>
+            <div class="input-wrapper">
+              <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+              <input type="email" id="email" formControlName="email" [placeholder]="'auth.login.emailPlaceholder' | translate" autocomplete="email"/>
+            </div>
+            <span *ngIf="submitted && f['email'].invalid" class="error-message">{{ 'auth.login.errors.emailRequired' | translate }}</span>
+          </div>
+
+          <div class="form-group" [class.has-error]="submitted && f['password'].invalid">
+            <div class="label-row">
+              <label for="password">{{ 'auth.login.password' | translate }}</label>
+              <a href="#" class="forgot-link">{{ 'auth.login.forgotPassword' | translate }}</a>
+            </div>
+            <div class="input-wrapper">
+              <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" [placeholder]="'auth.login.passwordPlaceholder' | translate" autocomplete="current-password"/>
+              <button type="button" class="toggle-password" (click)="showPassword = !showPassword" aria-label="Toggle password">
+                <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+            <span *ngIf="submitted && f['password'].invalid" class="error-message">{{ 'auth.login.errors.passwordRequired' | translate }}</span>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="loading">
+            <span *ngIf="!loading">{{ 'auth.login.submit' | translate }}</span>
+            <span *ngIf="loading" class="btn-loading"><span class="spinner"></span> {{ 'auth.login.submitting' | translate }}</span>
+          </button>
+
+        </form>
+
+        <div class="auth-footer">
+          <p>{{ 'auth.login.noAccount' | translate }} <a routerLink="/auth/register">{{ 'auth.login.createOne' | translate }}</a></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

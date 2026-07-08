@@ -1,0 +1,164 @@
+<div class="page-wrap" *ngIf="!loading; else loader">
+
+  <div class="error-banner" *ngIf="errorMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <ng-container *ngIf="!errorMessage">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow">{{ 'barber.revenue.eyebrow' | translate }}</p>
+        <h1 class="page-title">{{ 'barber.revenue.title' | translate }}</h1>
+      </div>
+      <div class="header-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <section class="kpi-section">
+    <div class="kpi-top-row">
+      <div class="kpi-hero">
+        <div class="hero-glow"></div>
+        <div class="hero-top">
+          <div class="kpi-icon icon-alltime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+          <span class="hero-tag">{{ 'barber.revenue.lifetime' | translate }}</span>
+        </div>
+        <div class="hero-mid">
+          <p class="hero-label">{{ 'barber.revenue.allTimeRevenue' | translate }}</p>
+          <p class="hero-amount">{{ kpis.all_time | number:'1.0-0' }}</p>
+          <p class="hero-unit">DT</p>
+        </div>
+        <div class="hero-bottom">
+          <div class="hero-ring-wrap">
+            <svg viewBox="0 0 56 56" class="ring-svg"><circle cx="28" cy="28" r="22" class="ring-track"/><circle cx="28" cy="28" r="22" class="ring-fill c-alltime" style="stroke-dasharray:138.23; stroke-dashoffset:0"/></svg>
+            <span class="ring-center-text">100%</span>
+          </div>
+          <div class="hero-sub-stats">
+            <div class="sub-stat"><span class="sub-stat-val">{{ kpis.month | number:'1.0-0' }}</span><span class="sub-stat-lbl">{{ 'barber.revenue.thisMonth' | translate }}</span></div>
+            <div class="sub-stat-divider"></div>
+            <div class="sub-stat"><span class="sub-stat-val">{{ kpis.week | number:'1.0-0' }}</span><span class="sub-stat-lbl">{{ 'barber.revenue.thisWeek' | translate }}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-tile kpi-today">
+          <div class="tile-glow"></div>
+          <div class="tile-top">
+            <div class="kpi-icon icon-today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg></div>
+            <div class="tile-ring-wrap"><svg viewBox="0 0 40 40" class="ring-svg"><circle cx="20" cy="20" r="16" class="ring-track"/><circle cx="20" cy="20" r="16" class="ring-fill c-today" [style.stroke-dasharray]="100.53" [style.stroke-dashoffset]="100.53 * (1 - (kpis.month > 0 ? kpis.today / kpis.month : 0))"/></svg></div>
+          </div>
+          <p class="tile-label">{{ 'barber.revenue.today' | translate }}</p>
+          <p class="tile-value">{{ kpis.today | number:'1.0-0' }}</p>
+          <p class="tile-unit">DT</p>
+        </div>
+
+        <div class="kpi-tile kpi-week">
+          <div class="tile-glow"></div>
+          <div class="tile-top">
+            <div class="kpi-icon icon-week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+            <div class="tile-ring-wrap"><svg viewBox="0 0 40 40" class="ring-svg"><circle cx="20" cy="20" r="16" class="ring-track"/><circle cx="20" cy="20" r="16" class="ring-fill c-week" [style.stroke-dasharray]="100.53" [style.stroke-dashoffset]="100.53 * (1 - (kpis.month > 0 ? kpis.week / kpis.month : 0))"/></svg></div>
+          </div>
+          <p class="tile-label">{{ 'barber.revenue.thisWeek' | translate }}</p>
+          <p class="tile-value">{{ kpis.week | number:'1.0-0' }}</p>
+          <p class="tile-unit">DT</p>
+        </div>
+
+        <div class="kpi-tile kpi-rating">
+          <div class="tile-glow"></div>
+          <div class="tile-top">
+            <div class="kpi-icon icon-rating"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div class="tile-ring-wrap"><svg viewBox="0 0 40 40" class="ring-svg"><circle cx="20" cy="20" r="16" class="ring-track"/><circle cx="20" cy="20" r="16" class="ring-fill c-rating" [style.stroke-dasharray]="100.53" [style.stroke-dashoffset]="100.53 * (1 - kpis.rating / 5)"/></svg></div>
+          </div>
+          <p class="tile-label">{{ 'barber.revenue.rating' | translate }}</p>
+          <p class="tile-value">{{ kpis.rating | number:'1.1-1' }}</p>
+          <p class="tile-unit">{{ 'barber.revenue.outOf5' | translate }}</p>
+        </div>
+
+        <div class="kpi-tile kpi-appts">
+          <div class="tile-glow"></div>
+          <div class="tile-top">
+            <div class="kpi-icon icon-appts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+            <div class="tile-ring-wrap"><svg viewBox="0 0 40 40" class="ring-svg"><circle cx="20" cy="20" r="16" class="ring-track"/><circle cx="20" cy="20" r="16" class="ring-fill c-appts" [style.stroke-dasharray]="100.53" [style.stroke-dashoffset]="0"/></svg></div>
+          </div>
+          <p class="tile-label">{{ 'barber.revenue.bookings' | translate }}</p>
+          <p class="tile-value">{{ totalAppointments() }}</p>
+          <p class="tile-unit">{{ 'barber.revenue.appointments' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-month-card">
+      <div class="month-glow"></div>
+      <div class="month-left">
+        <div class="kpi-icon icon-month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg></div>
+        <div>
+          <p class="tile-label">{{ 'barber.revenue.thisMonth' | translate }}</p>
+          <p class="month-amount">{{ kpis.month | number:'1.0-0' }}</p>
+          <p class="tile-unit">DT</p>
+        </div>
+      </div>
+      <div class="month-right">
+        <div class="month-ring-wrap">
+          <svg viewBox="0 0 72 72" class="ring-svg"><circle cx="36" cy="36" r="30" class="ring-track"/><circle cx="36" cy="36" r="30" class="ring-fill c-month" [style.stroke-dasharray]="188.5" [style.stroke-dashoffset]="188.5 * (1 - (kpis.all_time > 0 ? kpis.month / kpis.all_time : 0))"/></svg>
+          <div class="month-ring-label">
+            <span class="month-pct">{{ kpis.all_time > 0 ? ((kpis.month / kpis.all_time) * 100 | number:'1.0-0') : 0 }}%</span>
+            <span class="month-pct-sub">{{ 'barber.revenue.ofTotal' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="charts-section">
+    <div class="charts-row-desktop">
+      <div>
+        <div class="section-title">{{ 'barber.revenue.monthlyRevenue' | translate }}</div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <p class="chart-sub">{{ 'barber.revenue.last6Months' | translate }}</p>
+            <span class="chart-badge">DT</span>
+          </div>
+          <div class="chart-body"><canvas id="revenueChart"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">{{ 'barber.revenue.byService' | translate }}</div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <p class="chart-sub">{{ 'barber.revenue.revenueBreakdown' | translate }}</p>
+          </div>
+          <div class="chart-body chart-body-sm"><canvas id="serviceChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="bottom-section">
+    <div class="bottom-row-desktop">
+      <div>
+        <div class="section-title">{{ 'barber.revenue.statusChart' | translate }}</div>
+        <div class="info-card">
+          <div class="status-chart-wrap"><canvas id="statusChart"></canvas></div>
+          <div class="status-legend">
+            <div class="legend-item" *ngFor="let key of getStatusKeys()">
+              <span class="legend-dot" [style.background]="getStatusColor(key)"></span>
+              <span class="legend-label">{{ key | titlecase }}</span>
+              <span class="legend-count">{{ statusSummary[key] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+  </ng-container>
+
+</div>
+
+<ng-template #loader>
+  <div class="page-loader"><div class="spin"></div><p>{{ 'barber.revenue.loading' | translate }}</p></div>
+</ng-template>

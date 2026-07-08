@@ -1,0 +1,146 @@
+<div class="page">
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <p class="header-eyebrow">{{ 'appointments.eyebrow' | translate }}</p>
+      <h1 class="header-title">{{ 'appointments.title' | translate }}</h1>
+    </div>
+    <button class="book-btn" (click)="bookNew()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      {{ 'appointments.book' | translate }}
+    </button>
+  </header>
+
+  <!-- ── Tab Pills ───────────────────────────────────────── -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab" [class.active]="activeTab === 'upcoming'" (click)="setTab('upcoming')">
+        {{ 'appointments.tabs.upcoming' | translate }}
+        <span class="tab-count" *ngIf="upcomingCount > 0">{{ upcomingCount }}</span>
+      </button>
+      <button class="tab" [class.active]="activeTab === 'past'" (click)="setTab('past')">
+        {{ 'appointments.tabs.past' | translate }}
+      </button>
+      <button class="tab" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+        {{ 'appointments.tabs.all' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Body ────────────────────────────────────────────── -->
+  <div class="page-body">
+
+    <!-- Loader -->
+    <div class="state-wrap" *ngIf="loading">
+      <div class="spinner"></div>
+      <p class="state-text">{{ 'appointments.loading' | translate }}</p>
+    </div>
+
+    <!-- Error -->
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <!-- Empty -->
+    <div class="empty-state" *ngIf="!loading && filtered.length === 0">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <p class="empty-title">{{ 'appointments.emptyTitle' | translate }}</p>
+      <p class="empty-sub">{{ 'appointments.emptySub' | translate }}</p>
+      <button class="btn-hero-primary" (click)="bookNew()">{{ 'appointments.browseShops' | translate }}</button>
+    </div>
+
+    <!-- List -->
+    <div class="appt-list" *ngIf="!loading && filtered.length > 0">
+      <div class="appt-card" *ngFor="let a of filtered"
+        [class.card-upcoming]="a.status === 'pending'"
+        [class.card-done]="a.status === 'confirmed' || a.status === 'completed'"
+        [class.card-cancelled]="a.status === 'cancelled' || a.status === 'no_show'">
+
+        <!-- Top row: date label + status -->
+        <div class="card-top">
+          <div class="date-chip" [class.chip-today]="isToday(getDate(a))"
+            [class.chip-tomorrow]="isTomorrow(getDate(a))">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            {{ dateLabel(getDate(a)) }}
+          </div>
+          <span class="status-badge" [ngClass]="statusClass(a.status)">
+            {{ statusLabel(a.status) }}
+          </span>
+        </div>
+
+        <!-- Service + shop name -->
+        <div class="card-main">
+          <p class="card-service">{{ getServiceName(a) }}</p>
+          <p class="card-shop">{{ getShopName(a) }}</p>
+        </div>
+
+        <!-- Detail row -->
+        <div class="card-details">
+          <div class="detail">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {{ getTime(a) }}
+          </div>
+          <div class="detail" *ngIf="getBarberName(a) !== '—'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            {{ getBarberName(a) }}
+          </div>
+          <div class="detail detail-price">
+            {{ getPrice(a) }} {{ 'appointments.dinars' | translate }}
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card-notes" *ngIf="a.notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          {{ a.notes }}
+        </div>
+
+        <!-- Cancel action -->
+        <div class="card-action" *ngIf="canCancel(a)">
+          <button class="cancel-btn" (click)="cancelAppointment(a.id)" [disabled]="cancellingId === a.id">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            {{ cancellingId === a.id ? ('appointments.cancelling' | translate) : ('appointments.cancel' | translate) }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <app-bottom-nav [activeTab]="'appointments'"></app-bottom-nav>
+</div>

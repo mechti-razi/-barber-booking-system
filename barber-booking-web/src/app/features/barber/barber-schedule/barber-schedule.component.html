@@ -1,0 +1,166 @@
+<div class="page-wrap" *ngIf="!loading; else loader">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">{{ 'barber.schedule.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'barber.schedule.subtitle' | translate }}</p>
+    </div>
+    <button class="save-btn" [disabled]="saving" (click)="saveSchedule()">
+      <span *ngIf="!saving" class="btn-content">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon btn-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        {{ 'barber.schedule.saveChanges' | translate }}
+      </span>
+      <span *ngIf="saving" class="btn-loader-wrapper">
+        <span class="btn-loader"></span>
+        {{ 'barber.schedule.saving' | translate }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert-container">
+    <div class="alert alert-success" *ngIf="successMessage">
+      <div class="alert-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="svg-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="alert-content">{{ successMessage }}</div>
+    </div>
+    <div class="alert alert-error" *ngIf="errorMessage">
+      <div class="alert-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="svg-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+      <div class="alert-content">{{ errorMessage }}</div>
+    </div>
+  </div>
+
+  <div class="schedule-container">
+    <!-- Day List -->
+    <div class="days-list-card">
+      <div class="card-title-row">
+        <span class="card-title">{{ 'barber.schedule.weeklyDays' | translate }}</span>
+        <span class="days-count">{{ 'barber.schedule.daysConfigured' | translate }}</span>
+      </div>
+      <div class="day-selectors">
+        <button *ngFor="let day of schedule" class="day-btn"
+          [class.active]="selectedDayCode === day.day_of_week"
+          [class.btn-closed]="!day.is_available"
+          (click)="selectDay(day.day_of_week)">
+          <div class="day-btn-meta">
+            <span class="day-btn-name">{{ day.day_name.substring(0, 3) }}</span>
+            <span class="day-btn-fullname">{{ day.day_name }}</span>
+            <span class="day-btn-hours" *ngIf="day.is_available">{{ day.start_time }} - {{ day.end_time }}</span>
+            <span class="day-btn-hours closed" *ngIf="!day.is_available">{{ 'barber.schedule.closed' | translate }}</span>
+          </div>
+          <span class="indicator-dot" [class.available]="day.is_available"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Day Details -->
+    <div class="day-details-card" *ngIf="selectedDaySchedule as day">
+      <div class="details-header">
+        <div class="details-title-wrap">
+          <h2>{{ day.day_name }}</h2>
+          <span class="badge" [class.badge-active]="day.is_available">{{ day.is_available ? ('barber.schedule.available' | translate) : ('barber.schedule.offline' | translate) }}</span>
+        </div>
+        <div class="details-actions">
+          <button class="copy-all-btn" *ngIf="day.is_available" (click)="copyScheduleToAll(day.day_of_week)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon btn-icon-small"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>{{ 'barber.schedule.applyToAll' | translate }}</span>
+          </button>
+          <div class="status-toggle-wrap">
+            <span class="toggle-label">{{ day.is_available ? ('barber.schedule.available' | translate) : ('barber.schedule.closed' | translate) }}</span>
+            <label class="switch"><input type="checkbox" [(ngModel)]="day.is_available"><span class="slider round"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-body" [class.disabled-opacity]="!day.is_available">
+        <!-- Working Hours -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+            <div>
+              <h3>{{ 'barber.schedule.workingHours' | translate }}</h3>
+              <p class="section-description">{{ 'barber.schedule.workingHoursDesc' | translate }}</p>
+            </div>
+          </div>
+          <div class="time-pickers-grid">
+            <div class="time-picker-item">
+              <label>{{ 'barber.schedule.shiftStarts' | translate }}</label>
+              <div class="time-input-wrapper"><input type="time" [(ngModel)]="day.start_time" [disabled]="!day.is_available"></div>
+            </div>
+            <div class="time-picker-item">
+              <label>{{ 'barber.schedule.shiftEnds' | translate }}</label>
+              <div class="time-input-wrapper"><input type="time" [(ngModel)]="day.end_time" [disabled]="!day.is_available"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rest Break -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div class="section-icon-box break-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg></div>
+            <div>
+              <h3>{{ 'barber.schedule.restBreak' | translate }}</h3>
+              <p class="section-description">{{ 'barber.schedule.restBreakDesc' | translate }}</p>
+            </div>
+          </div>
+          <div class="time-pickers-grid">
+            <div class="time-picker-item">
+              <label>{{ 'barber.schedule.breakStarts' | translate }}</label>
+              <div class="time-input-wrapper"><input type="time" [(ngModel)]="day.break_start_time" [disabled]="!day.is_available"></div>
+            </div>
+            <div class="time-picker-item">
+              <label>{{ 'barber.schedule.breakEnds' | translate }}</label>
+              <div class="time-input-wrapper"><input type="time" [(ngModel)]="day.break_end_time" [disabled]="!day.is_available"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slot Preview -->
+        <div class="settings-section slot-preview-section">
+          <div class="section-header">
+            <div class="section-icon-box preview-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+            <div>
+              <h3>{{ 'barber.schedule.generatedSlots' | translate }}</h3>
+              <p class="section-description">{{ 'barber.schedule.generatedSlotsDesc' | translate }}</p>
+            </div>
+          </div>
+          <div class="slots-preview-grid" *ngIf="day.is_available; else closedPreview">
+            <div class="slot-pill" *ngFor="let slot of generateTimeSlots(day)">
+              <span class="slot-dot"></span>{{ slot }}
+            </div>
+            <div class="empty-slots" *ngIf="generateTimeSlots(day).length === 0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon alert-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span>{{ 'barber.schedule.invalidHours' | translate }}</span>
+            </div>
+          </div>
+          <ng-template #closedPreview>
+            <div class="closed-banner">
+              <div class="closed-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+              <p class="closed-text">{{ 'barber.schedule.closedBanner' | translate }}</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="card-inline-save">
+        <button class="save-btn inline-save-btn" [disabled]="saving" (click)="saveSchedule()">
+          <span *ngIf="!saving" class="btn-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon btn-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            {{ 'barber.schedule.saveScheduleChanges' | translate }}
+          </span>
+          <span *ngIf="saving" class="btn-loader-wrapper">
+            <span class="btn-loader"></span>{{ 'barber.schedule.saving' | translate }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loader>
+  <div class="page-loader">
+    <div class="spin-gold"></div>
+    <p>{{ 'barber.schedule.loading' | translate }}</p>
+  </div>
+</ng-template>

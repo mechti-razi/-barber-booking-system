@@ -1,0 +1,532 @@
+/* ═══════════════════════════════════════════════════════
+   Shop Detail  —  Mobile-First
+   Base = 375 px
+═══════════════════════════════════════════════════════ */
+
+.page {
+  min-height: 100dvh;
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Loader ──────────────────────────────────────────── */
+.full-loader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+}
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(212,175,55,0.15);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.back-btn { margin: 16px 14px; }
+
+/* ── Hero Cover ──────────────────────────────────────── */
+.hero-cover {
+  position: relative;
+  height: 260px;
+  background: #0e0e14;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.25) 0%,
+    rgba(10,10,13,0.85) 100%
+  );
+}
+
+/* Back button */
+.hero-back {
+  position: absolute;
+  top: 14px; left: 14px;
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: rgba(10,10,13,0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s;
+}
+.hero-back:active { background: rgba(255,255,255,0.12); }
+.hero-back svg { width: 18px; height: 18px; stroke: #fff; }
+
+/* Status pill */
+.hero-status {
+  position: absolute;
+  top: 14px; right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  background: rgba(239,68,68,0.18);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #f87171;
+}
+.hero-status.open {
+  background: rgba(16,185,129,0.15);
+  border-color: rgba(16,185,129,0.3);
+  color: #34d399;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+.hero-status.open .status-dot { animation: pulse 2s infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Hero info (bottom of cover) */
+.hero-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 16px;
+}
+.hero-name {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin: 0 0 6px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  font-weight: 500;
+}
+.hero-meta-item svg {
+  width: 12px; height: 12px;
+  stroke: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+
+/* ── Page body ───────────────────────────────────────── */
+.page-body {
+  flex: 1;
+  padding: 0 0 80px;
+}
+
+/* ── Stats strip ─────────────────────────────────────── */
+.stats-strip {
+  display: flex;
+  align-items: stretch;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--card-border);
+}
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 14px 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.stat-val {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.4px;
+}
+.stat-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 800;
+}
+.stat-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-divider {
+  width: 1px;
+  background: var(--card-border);
+  align-self: stretch;
+  margin: 10px 0;
+}
+
+/* ── Description ─────────────────────────────────────── */
+.shop-desc {
+  padding: 16px 16px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ── Section ─────────────────────────────────────────── */
+.section {
+  padding: 22px 14px 0;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.section-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-color);
+  background: rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+/* ── Services ────────────────────────────────────────── */
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.service-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 14px 14px;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.18s ease;
+}
+.service-card:active { border-color: rgba(212,175,55,0.3); }
+
+.service-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.service-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.service-icon svg {
+  width: 16px; height: 16px;
+  stroke: var(--primary-color);
+}
+.service-info { min-width: 0; }
+.service-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.service-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.service-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin: 0;
+}
+.service-duration svg {
+  width: 11px; height: 11px;
+  stroke: var(--text-muted); flex-shrink: 0;
+}
+
+.service-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.service-price {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--primary-color);
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+.price-currency {
+  font-size: 11px;
+  font-weight: 700;
+  color: #92731e;
+  margin-left: 2px;
+}
+.btn-book {
+  padding: 7px 16px;
+  background: var(--primary-gradient);
+  color: #0a0a0d;
+  border: none;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-book:active { transform: scale(0.95); opacity: 0.85; }
+.btn-book:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Barbers ─────────────────────────────────────────── */
+.barbers-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.barbers-scroll::-webkit-scrollbar { display: none; }
+
+.barber-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 110px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 16px 10px 14px;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.barber-card:active { border-color: rgba(212,175,55,0.3); transform: scale(0.97); }
+
+.barber-avatar {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--primary-gradient);
+  color: #0a0a0d;
+  font-size: 20px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px var(--primary-glow);
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.barber-avatar.has-photo { font-size: 0; }
+.barber-avatar span { font-size: 20px; font-weight: 900; color: #0a0a0d; }
+
+.barber-info { min-width: 0; width: 100%; }
+.barber-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.barber-spec {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.barber-exp {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin: 1px 0 0;
+}
+.barber-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fbbf24;
+  margin-top: 4px;
+}
+.barber-rating svg {
+  width: 11px; height: 11px;
+  fill: #fbbf24;
+}
+.barber-status {
+  margin-top: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+.barber-status.active {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* ── Page Body ───────────────────────────────────────── */
+.page-body {
+  padding-bottom: 110px; /* Clearance for floating bottom nav */
+}
+
+/* ── Contact row ─────────────────────────────────────── */
+.contact-row {
+  display: flex;
+  gap: 10px;
+  padding: 22px 14px 0;
+}
+.contact-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+  font-family: 'Outfit', sans-serif;
+}
+.contact-btn:active { opacity: 0.75; }
+.contact-btn svg { width: 17px; height: 17px; stroke: currentColor; flex-shrink: 0; }
+
+.contact-call {
+  background: var(--primary-gradient);
+  color: #0a0a0d;
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+.contact-email {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-secondary);
+}
+
+/* ── Tablet ≥ 600px ──────────────────────────────────── */
+@media (min-width: 600px) {
+  .hero-cover  { height: 300px; }
+  .hero-name   { font-size: 28px; }
+  .page-body   { padding-bottom: 110px; }
+
+  .section     { padding-left: 20px; padding-right: 20px; }
+  .shop-desc   { padding-left: 20px; padding-right: 20px; }
+  .contact-row { padding-left: 20px; padding-right: 20px; }
+
+  .barbers-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    overflow: visible;
+  }
+  .barber-card { width: auto; }
+}
+
+/* ── Desktop ≥ 900px ─────────────────────────────────── */
+@media (min-width: 900px) {
+  .hero-cover  { height: 360px; }
+  .hero-name   { font-size: 34px; }
+  .hero-info   { padding: 16px 36px 24px; }
+  .hero-back   { top: 20px; left: 24px; }
+  .hero-status { top: 20px; right: 24px; }
+
+  .page-body   { padding-bottom: 40px; } /* Bottom nav hidden on desktop */
+  .section, .shop-desc, .contact-row { padding-left: 36px; padding-right: 36px; }
+
+  /* Two-col layout for services + barbers */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 28px;
+    padding: 0 36px;
+    margin-top: 22px;
+  }
+
+  .services-list > .service-card:active,
+  .service-card:hover {
+    border-color: rgba(212,175,55,0.25);
+    background: rgba(20,20,26,0.9);
+  }
+
+  .barbers-scroll {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}

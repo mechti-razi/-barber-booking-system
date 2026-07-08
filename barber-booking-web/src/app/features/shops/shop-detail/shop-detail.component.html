@@ -1,0 +1,171 @@
+<!-- ═══════════════════════════════════════════════════════
+     Shop Detail  —  Premium Dark Mobile-First View
+═══════════════════════════════════════════════════════ -->
+<div class="page" *ngIf="!loading; else loaderTpl">
+
+  <ng-container *ngIf="shop">
+    <!-- ── Hero Cover ────────────────────────────────────── -->
+    <div class="hero-cover">
+      <img [src]="shop.logo_url || 'https://picsum.photos/800/400?random=' + shop.id"
+           [alt]="shop.name" class="hero-img" />
+      <div class="hero-overlay"></div>
+
+      <!-- Back button -->
+      <button class="hero-back" (click)="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Status Pill -->
+      <span class="hero-status" [class.open]="shop.status === 'active'">
+        <span class="status-dot"></span>
+        {{ shop.status === 'active' ? ('shopDetail.open' | translate) : ('shopDetail.closed' | translate) }}
+      </span>
+
+      <!-- Hero Info -->
+      <div class="hero-info">
+        <h1 class="hero-name">{{ shop.name }}</h1>
+        <div class="hero-meta">
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            {{ shop.address || ('shopDetail.addressUnset' | translate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Stats Strip ───────────────────────────────────── -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <span class="stat-val">{{ shop.barbers?.length || 0 }}</span>
+        <span class="stat-lbl">{{ 'shopDetail.barbers' | translate }}</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-val">{{ shop.services?.length || 0 }}</span>
+        <span class="stat-lbl">{{ 'shopDetail.services' | translate }}</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-val" style="color: #fbbf24; display: flex; align-items: center; gap: 4px;">★ {{ shop.rating || '4.8' }}</span>
+        <span class="stat-lbl">{{ 'shopDetail.rating' | translate }}</span>
+      </div>
+    </div>
+
+    <!-- ── Description ───────────────────────────────────── -->
+    <p class="shop-desc" *ngIf="shop.description">
+      {{ shop.description }}
+    </p>
+
+    <!-- ── Page Body Content Grid ────────────────────────── -->
+    <div class="page-body">
+      <div class="detail-grid">
+
+        <!-- Column 1: Services -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">{{ 'shopDetail.selectService' | translate }}</h2>
+            <span class="section-count">{{ shop.services?.length || 0 }}</span>
+          </div>
+
+          <div class="services-list" *ngIf="shop.services && shop.services.length > 0; else noServices">
+            <div class="service-card" *ngFor="let service of shop.services">
+              <div class="service-left">
+                <div class="service-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                  </svg>
+                </div>
+                <div class="service-info">
+                  <h3 class="service-name">{{ service.name }}</h3>
+                  <p class="service-desc" *ngIf="service.description">{{ service.description }}</p>
+                  <p class="service-duration">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    {{ service.duration_minutes }} min
+                  </p>
+                </div>
+              </div>
+              <div class="service-right">
+                <p class="service-price">
+                  {{ service.base_price || service.price }} <span class="price-currency">DT</span>
+                </p>
+                <button class="btn-book" (click)="bookAppointment(shop.barbers?.[0]?.id, service.id)" [disabled]="!shop.barbers || shop.barbers.length === 0">{{ 'shopDetail.book' | translate }}</button>
+              </div>
+            </div>
+          </div>
+          <ng-template #noServices>
+            <div class="state-wrap" style="padding: 24px 0;">
+              <p class="state-text">No services listed</p>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Column 2: Barbers -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">{{ 'shopDetail.ourTeam' | translate }}</h2>
+            <span class="section-count">{{ shop.barbers?.length || 0 }}</span>
+          </div>
+
+          <div class="barbers-scroll" *ngIf="shop.barbers && shop.barbers.length > 0; else noBarbers">
+            <div class="barber-card" *ngFor="let barber of shop.barbers">
+              <div class="barber-avatar"
+                   [style.background-image]="barber.user?.profile_photo_url ? 'url(' + barber.user.profile_photo_url + ')' : ''"
+                   [class.has-photo]="barber.user?.profile_photo_url">
+                <span *ngIf="!barber.user?.profile_photo_url">{{ (barber.user?.name || 'B').charAt(0).toUpperCase() }}</span>
+              </div>
+              <div class="barber-info">
+                <h3 class="barber-name">{{ barber.user?.name || 'Barber' }}</h3>
+                <p class="barber-spec">{{ barber.specialization || 'Master Barber' }}</p>
+                <p class="barber-exp" *ngIf="barber.experience_years">{{ barber.experience_years }} {{ 'shopDetail.yrsExp' | translate }}</p>
+                <div class="barber-rating" *ngIf="barber.rating">
+                  <svg viewBox="0 0 24 24" fill="#f59e0b" width="12" height="12"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  {{ barber.rating }}
+                </div>
+                <div class="barber-status" [class.active]="barber.is_active">
+                  {{ barber.is_active ? ('shopDetail.available' | translate) : ('shopDetail.unavailable' | translate) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noBarbers>
+            <div class="state-wrap" style="padding: 24px 0;"><p class="state-text">{{ 'shopDetail.noBarbers' | translate }}</p></div>
+          </ng-template>
+        </div>
+
+      </div>
+
+      <!-- Contact details row -->
+      <div class="contact-row" *ngIf="shop.phone || shop.email">
+          <a [href]="'tel:' + shop.phone" class="contact-btn contact-call" *ngIf="shop.phone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            {{ 'shopDetail.callShop' | translate }}
+          </a>
+          <a [href]="'mailto:' + shop.email" class="contact-btn contact-email" *ngIf="shop.email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            {{ 'shopDetail.emailUs' | translate }}
+          </a>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <app-bottom-nav [activeTab]="'shops'"></app-bottom-nav>
+</div>
+
+<!-- Loader Template -->
+<ng-template #loaderTpl>
+  <div class="full-loader">
+    <div class="spinner"></div>
+    <p>Loading shop details…</p>
+  </div>
+</ng-template>

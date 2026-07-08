@@ -1,0 +1,340 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ══════════════════════════════════════════════════════
+   CLIENT TOP NAV  —  Floating pill, all screen sizes
+   Mobile: compact (brand + user controls)
+   Desktop: full 3-zone (brand | links | controls+user)
+══════════════════════════════════════════════════════ */
+
+.top-nav {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 1080px;
+  z-index: 1000;
+  font-family: 'Inter', sans-serif;
+}
+
+.top-nav-inner {
+  display: flex;
+  align-items: center;
+  height: 58px;
+  padding: 0 8px 0 12px;
+  background: var(--topnav-bg, rgba(13, 15, 25, 0.82));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  border: 1px solid var(--topnav-border, rgba(255, 255, 255, 0.07));
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(245, 158, 11, 0.06);
+}
+
+/* ══════════════════════════════════════════════════════
+   LEFT — Brand
+══════════════════════════════════════════════════════ */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.32);
+  flex-shrink: 0;
+}
+
+.brand-logo-svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.brand-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 20px;
+  padding: 1px 7px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+/* ══════════════════════════════════════════════════════
+   CENTER — Nav Links  (desktop only)
+══════════════════════════════════════════════════════ */
+.links {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.links a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #6b7280;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 12px;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+  position: relative;
+}
+
+.links a svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.links a:hover {
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.links a.active {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  font-weight: 700;
+}
+
+.links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+/* ══════════════════════════════════════════════════════
+   RIGHT — Controls + User
+══════════════════════════════════════════════════════ */
+.right-zone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Utility Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ctrl-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.ctrl-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.lang-btn {
+  width: auto;
+  padding: 0 10px;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.22);
+  background: rgba(245, 158, 11, 0.05);
+  font-family: 'Inter', sans-serif;
+}
+
+.lang-btn:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+/* Vertical Divider */
+.divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+/* User Card — avatar + name + role + logout in one pill */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 4px 4px 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 40px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+
+.user-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(245, 158, 11, 0.18);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37, #f59e0b);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  flex-shrink: 0;
+  letter-spacing: -0.3px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.user-role {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #f59e0b;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.logout-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.07);
+  border: 1px solid rgba(239, 68, 68, 0.14);
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+  margin-left: 1px;
+}
+
+.logout-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.28);
+  transform: scale(1.08);
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+
+/* Mobile — hide nav links (bottom-nav handles navigation)
+   Also hide user name/role text to save space */
+@media (max-width: 768px) {
+  .links { display: none; }
+
+  .user-details { display: none; }
+
+  .user-card {
+    padding: 4px;
+    border-radius: 50%;
+    gap: 0;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .user-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(245, 158, 11, 0.15);
+  }
+
+  .logout-btn {
+    display: none;
+  }
+}
+
+/* Compact layout for very small screens */
+@media (max-width: 360px) {
+  .brand-info { display: none; }
+  .lang-btn span { display: none; }
+  .lang-btn { width: 34px; padding: 0; }
+}

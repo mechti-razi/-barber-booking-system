@@ -1,0 +1,176 @@
+<div class="profile-page" *ngIf="!loading; else loaderTpl">
+
+  <div class="alert alert-error" *ngIf="errorMessage && !profile.name" style="margin: 20px 0; padding: 14px 18px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; display: flex; align-items: center; gap: 12px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; stroke: #ef4444; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <ng-container *ngIf="!errorMessage || profile.name">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">{{ 'barber.profile.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'barber.profile.subtitle' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="hero-avatar">{{ getInitials(profile.name) }}</div>
+      <div class="hero-info">
+        <h2 class="hero-name">{{ profile.name || 'Your Name' }}</h2>
+        <p class="hero-spec">{{ profile.specialization || 'Barber' }}</p>
+        <div class="hero-meta">
+          <span class="hero-meta-item" *ngIf="profile.shop_name">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-meta-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            {{ profile.shop_name }}
+          </span>
+          <span class="hero-meta-item" *ngIf="profile.rating">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="hero-meta-icon star-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            {{ profile.rating }} {{ 'barber.profile.rating' | translate }}
+          </span>
+          <span class="hero-meta-item" *ngIf="profile.experience_years">
+            {{ profile.experience_years }} {{ profile.experience_years === 1 ? ('barber.profile.yrsExp' | translate) : ('barber.profile.yrsExpPlural' | translate) }} {{ 'barber.profile.exp' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'" id="tab-profile">{{ 'barber.profile.tabs.profile' | translate }}</button>
+      <button class="tab-btn" [class.active]="activeTab === 'shop'" (click)="activeTab = 'shop'" id="tab-shop" *ngIf="isOwner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        {{ 'barber.profile.tabs.shop' | translate }}
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'" id="tab-password">{{ 'barber.profile.tabs.password' | translate }}</button>
+    </div>
+
+    <!-- Profile Info Tab -->
+    <div class="form-card" *ngIf="activeTab === 'profile'">
+      <div class="form-alert success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="form-alert error"   *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.personalDetails' | translate }}</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>{{ 'barber.profile.fullName' | translate }}</label>
+            <input type="text" [(ngModel)]="profile.name" [placeholder]="'barber.profile.fullName' | translate" id="profile-name">
+          </div>
+          <div class="form-group">
+            <label>{{ 'barber.profile.emailAddress' | translate }}</label>
+            <input type="email" [(ngModel)]="profile.email" placeholder="your@email.com" id="profile-email">
+          </div>
+          <div class="form-group">
+            <label>{{ 'barber.profile.phoneNumber' | translate }}</label>
+            <input type="tel" [(ngModel)]="profile.phone" placeholder="+1 555 000 0000" id="profile-phone">
+          </div>
+          <div class="form-group">
+            <label>{{ 'barber.profile.experience' | translate }}</label>
+            <input type="number" [(ngModel)]="profile.experience_years" min="0" max="60" id="profile-exp">
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.professionalInfo' | translate }}</h3>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>{{ 'barber.profile.specialization' | translate }}</label>
+            <select [(ngModel)]="profile.specialization" id="profile-spec">
+              <option value="" disabled>{{ 'barber.profile.selectSpec' | translate }}</option>
+              <option *ngFor="let s of specializations" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label>{{ 'barber.profile.bio' | translate }}</label>
+            <textarea [(ngModel)]="profile.bio" rows="4" [placeholder]="'barber.profile.bioPh' | translate" id="profile-bio"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" [disabled]="saving" (click)="saveProfile()" id="save-profile-btn">
+          <span *ngIf="!saving">{{ 'barber.profile.saveChanges' | translate }}</span>
+          <span *ngIf="saving" class="btn-loader"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Shop Tab -->
+    <div class="form-card" *ngIf="activeTab === 'shop' && isOwner">
+      <div class="form-alert success" *ngIf="shopSuccessMessage">{{ shopSuccessMessage }}</div>
+      <div class="form-alert error"   *ngIf="shopErrorMessage">{{ shopErrorMessage }}</div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.shopPhoto' | translate }}</h3>
+        <div class="shop-img-picker" (click)="triggerLogoUpload()" [class.has-image]="logoPreviewUrl || shop.logo_url" [class.uploading]="uploadingLogo">
+          <div class="upload-spinner" *ngIf="uploadingLogo"><div class="spin-ring"></div><p>{{ 'common.saving' | translate }}</p></div>
+          <img *ngIf="!uploadingLogo && (logoPreviewUrl || shop.logo_url)" [src]="logoPreviewUrl || shop.logo_url" alt="Shop cover" class="shop-cover-img" />
+          <div class="shop-img-placeholder" *ngIf="!uploadingLogo && !logoPreviewUrl && !shop.logo_url">
+            <div class="picker-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+            <p class="picker-label">{{ 'barber.profile.tapToAdd' | translate }}</p>
+            <p class="picker-sub">{{ 'barber.profile.cameraOrGallery' | translate }}</p>
+          </div>
+          <div class="edit-overlay" *ngIf="!uploadingLogo && (logoPreviewUrl || shop.logo_url)">
+            <div class="edit-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+            <span>{{ 'barber.profile.changePhoto' | translate }}</span>
+          </div>
+        </div>
+        <input type="file" id="shop-logo-input" accept="image/*" style="display:none" (change)="onLogoFileSelected($event)" />
+        <button type="button" class="remove-photo-btn" *ngIf="logoPreviewUrl || shop.logo_url" (click)="removeShopPhoto()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+          {{ 'barber.profile.removePhoto' | translate }}
+        </button>
+      </div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.shopDescription' | translate }}</h3>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>{{ 'barber.profile.shopDescription' | translate }}</label>
+            <textarea [(ngModel)]="shop.description" rows="5" [placeholder]="'barber.profile.descriptionPh' | translate" id="shop-description"></textarea>
+            <p class="field-hint">{{ (shop.description || '').length }} / 2000</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.shopContact' | translate }}</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>{{ 'barber.profile.shopPhone' | translate }}</label><input type="tel" [(ngModel)]="shop.phone" placeholder="+1 555 000 0000" id="shop-phone" /></div>
+          <div class="form-group"><label>{{ 'barber.profile.shopEmail' | translate }}</label><input type="email" [(ngModel)]="shop.email" placeholder="shop@example.com" id="shop-email" /></div>
+          <div class="form-group full-width" *ngIf="shop.address">
+            <label>{{ 'barber.profile.addressReadOnly' | translate }}</label>
+            <input type="text" [value]="shop.address" readonly style="opacity:0.55;cursor:not-allowed" />
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" [disabled]="savingShop" (click)="saveShop()" id="save-shop-btn">
+          <span *ngIf="!savingShop">{{ 'barber.profile.saveShopInfo' | translate }}</span>
+          <span *ngIf="savingShop" class="btn-loader"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Password Tab -->
+    <div class="form-card" *ngIf="activeTab === 'password'">
+      <div class="form-alert success" *ngIf="pwSuccessMessage">{{ pwSuccessMessage }}</div>
+      <div class="form-alert error"   *ngIf="pwErrorMessage">{{ pwErrorMessage }}</div>
+      <div class="form-section">
+        <h3 class="section-label">{{ 'barber.profile.tabs.password' | translate }}</h3>
+        <div class="form-grid pw-grid">
+          <div class="form-group full-width"><label>{{ 'barber.profile.currentPassword' | translate }}</label><input type="password" [(ngModel)]="passwordForm.current_password" [placeholder]="'barber.profile.currentPassword' | translate" id="current-password"></div>
+          <div class="form-group"><label>{{ 'barber.profile.newPassword' | translate }}</label><input type="password" [(ngModel)]="passwordForm.new_password" [placeholder]="'barber.profile.newPassword' | translate" id="new-password"></div>
+          <div class="form-group"><label>{{ 'barber.profile.confirmNewPassword' | translate }}</label><input type="password" [(ngModel)]="passwordForm.new_password_confirmation" [placeholder]="'barber.profile.confirmNewPassword' | translate" id="confirm-password"></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="save-btn" [disabled]="savingPassword" (click)="changePassword()" id="save-password-btn">
+          <span *ngIf="!savingPassword">{{ 'barber.profile.updatePassword' | translate }}</span>
+          <span *ngIf="savingPassword" class="btn-loader"></span>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loaderTpl>
+  <div class="page-loader"><div class="spin"></div><p>{{ 'barber.profile.loading' | translate }}</p></div>
+</ng-template>

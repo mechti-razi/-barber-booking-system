@@ -1,0 +1,159 @@
+<div class="page">
+
+  <!-- ── Sticky Header ──────────────────────────────────── -->
+  <header class="page-header">
+    <div class="header-inner">
+      <div>
+        <p class="header-eyebrow">{{ 'shopList.eyebrow' | translate }}</p>
+        <h1 class="header-title">{{ 'shopList.title' | translate }}</h1>
+      </div>
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="6" cy="6" r="3"></circle>
+          <circle cx="6" cy="18" r="3"></circle>
+          <line x1="9.8" y1="8.2" x2="21" y2="12.6"></line>
+          <line x1="9.8" y1="15.8" x2="21" y2="11.4"></line>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input"
+               [placeholder]="'shopList.searchPlaceholder' | translate"
+               [(ngModel)]="searchQuery" (input)="onSearch()" id="shop-search-input"/>
+        <button class="search-clear" *ngIf="searchQuery" (click)="clearSearch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Body ───────────────────────────────────────────── -->
+  <div class="page-body">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="state-wrap">
+      <div class="loader-ring">
+        <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+      </div>
+      <p class="state-text">{{ 'shopList.findingShops' | translate }}</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error && !loading" class="error-banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+
+    <!-- Results info -->
+    <div class="results-bar" *ngIf="!loading && !error && filteredShops.length >= 0">
+      <span class="results-count">
+        {{ filteredShops.length }} {{ filteredShops.length !== 1 ? ('shopList.title' | translate) : ('shopList.title' | translate) }}
+        <span *ngIf="searchQuery"> {{ 'shopList.resultsFor' | translate }} "{{ searchQuery }}"</span>
+      </span>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && !error && filteredShops.length === 0" class="state-wrap">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <p class="state-text">{{ searchQuery ? ('shopList.noResults' | translate) : ('shopList.noShops' | translate) }}</p>
+      <p class="state-sub">{{ searchQuery ? ('shopList.tryDifferent' | translate) : ('shopList.checkBack' | translate) }}</p>
+      <button class="btn-reset" *ngIf="searchQuery" (click)="clearSearch()">{{ 'shopList.clearSearch' | translate }}</button>
+    </div>
+
+    <!-- Shop grid -->
+    <div class="shop-grid" *ngIf="!loading && filteredShops.length > 0">
+      <a class="shop-card"
+         *ngFor="let shop of filteredShops; let i = index"
+         [routerLink]="['/shops', shop.id]"
+         [style.animation-delay]="(i * 0.05) + 's'">
+
+        <!-- Cover image -->
+        <div class="card-cover">
+          <img [src]="shop.logo_url || 'https://picsum.photos/400/220?random=' + shop.id"
+               [alt]="shop.name" class="cover-img" loading="lazy"/>
+          <div class="cover-overlay"></div>
+          <span class="status-pill" [class.open]="shop.status === 'active'">
+            <span class="status-dot"></span>
+            {{ shop.status === 'active' ? ('shopList.open' | translate) : ('shopList.closed' | translate) }}
+          </span>
+          <div class="card-rating" *ngIf="shop.rating">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            {{ shop.rating | number:'1.1-1' }}
+          </div>
+        </div>
+
+        <!-- Card body -->
+        <div class="card-body">
+          <h2 class="card-name">{{ shop.name }}</h2>
+
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              {{ shop.address || ('shopDetail.addressUnset' | translate) }}
+            </span>
+          </div>
+
+          <div class="card-footer">
+            <div class="badge-row">
+              <span class="badge badge-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                {{ shop.barbers?.length || 0 }} {{ 'shopList.barbers' | translate }}
+              </span>
+              <span class="badge badge-muted">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                </svg>
+                {{ shop.services?.length || 0 }} {{ 'shopList.services' | translate }}
+              </span>
+            </div>
+            <div class="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </a>
+    </div>
+
+  </div><!-- /page-body -->
+
+  <app-bottom-nav [activeTab]="'shops'"></app-bottom-nav>
+</div>
