@@ -82,4 +82,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+
+    /**
+     * Get the push notification subscriptions for the user.
+     */
+    public function pushSubscriptions()
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
 }

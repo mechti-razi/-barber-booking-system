@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-api-domain.com/api/v1'
+  // Replace with your Railway API service URL after first deploy
+  // e.g. https://barber-booking-api-production.up.railway.app/api/v1
+  apiUrl: 'RAILWAY_API_URL_PLACEHOLDER/api/v1'
 };

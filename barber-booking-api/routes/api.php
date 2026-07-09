@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\BarberPanelController;
 
+use App\Http\Controllers\Api\V1\PushSubscriptionController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,7 +27,9 @@ Route::prefix('v1')->group(function () {
     // Public routes
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
-    
+
+    // Push notification public key (no auth needed so frontend can subscribe before login)
+    Route::get('/push/vapid-public-key', [PushSubscriptionController::class, 'vapidPublicKey']);
     // Public read-only routes
     Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
     Route::get('/shops/{id}/services', [ShopController::class, 'show']);
@@ -62,6 +66,10 @@ Route::prefix('v1')->group(function () {
         
         // Review routes (write)
         Route::apiResource('reviews', ReviewController::class)->except(['index', 'show']);
+
+        // Push notification subscription management
+        Route::post('/push/subscribe', [PushSubscriptionController::class, 'subscribe']);
+        Route::post('/push/unsubscribe', [PushSubscriptionController::class, 'unsubscribe']);
 
         // ── Barber Panel routes ────────────────────────────────────────────
         Route::prefix('barber-panel')->middleware('barber.active')->group(function () {

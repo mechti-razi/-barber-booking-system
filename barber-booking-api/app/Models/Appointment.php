@@ -24,12 +24,16 @@ class Appointment extends Model
         'cancellation_reason',
         'cancelled_at',
         'is_subscription',
+        'reminder_24h_sent',
+        'reminder_1h_sent',
     ];
 
     protected $casts = [
         'total_price' => 'decimal:2',
         'cancelled_at' => 'datetime',
         'is_subscription' => 'boolean',
+        'reminder_24h_sent' => 'boolean',
+        'reminder_1h_sent' => 'boolean',
     ];
 
     /**

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AppointmentService } from '../../core/services/appointment.service';
+import { PushNotificationService } from '../../core/services/push-notification.service';
 
 @Component({
   selector: 'app-profile',
@@ -19,10 +20,14 @@ export class ProfileComponent implements OnInit {
   pendingCount   = 0;
   totalSpent     = 0;
 
+  // Push notifications
+  pushToggling = false;
+
   constructor(
     private authService: AuthService,
     private appointmentService: AppointmentService,
-    private router: Router
+    private router: Router,
+    public pushNotification: PushNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +61,24 @@ export class ProfileComponent implements OnInit {
       next:  () => this.router.navigate(['/auth/login']),
       error: () => { this.loggingOut = false; }
     });
+  }
+
+  get pushEnabled(): boolean {
+    return this.pushNotification.permissionStatus === 'granted';
+  }
+
+  async togglePushNotifications(): Promise<void> {
+    if (this.pushToggling) return;
+    this.pushToggling = true;
+    try {
+      if (this.pushEnabled) {
+        await this.pushNotification.unsubscribe();
+      } else {
+        await this.pushNotification.init();
+      }
+    } finally {
+      this.pushToggling = false;
+    }
   }
 
   get initials(): string {
