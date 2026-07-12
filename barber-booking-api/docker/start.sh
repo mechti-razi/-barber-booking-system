@@ -32,12 +32,12 @@ else
 fi
 
 echo "==> Checking if database needs seeding..."
-USER_COUNT=$(php artisan tinker --execute="echo App\Models\User::count();" --no-ansi 2>/dev/null || echo "0")
-if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
+SHOP_COUNT=$(php artisan tinker --execute="echo App\Models\Shop::count();" --no-ansi 2>/dev/null || echo "0")
+if [ "$SHOP_COUNT" = "0" ] || [ -z "$SHOP_COUNT" ]; then
   echo "==> Database is empty. Seeding sample data..."
   php artisan db:seed --force --no-ansi || true
 else
-  echo "==> Database already has $USER_COUNT users. Skipping seed."
+  echo "==> Database already has $SHOP_COUNT shops. Skipping seed."
 fi
 
 echo "==> Starting services..."
