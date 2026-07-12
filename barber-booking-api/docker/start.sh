@@ -40,6 +40,17 @@ else
   echo "==> Database already has $SHOP_COUNT shops. Skipping seed."
 fi
 
+echo "==> Ensuring correct permissions for storage and bootstrap/cache..."
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+if [ -f storage/oauth-private.key ]; then
+  chmod 600 storage/oauth-private.key
+fi
+if [ -f storage/oauth-public.key ]; then
+  chmod 644 storage/oauth-public.key
+fi
+
 echo "==> Starting services..."
 mkdir -p /var/log/supervisor
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+
