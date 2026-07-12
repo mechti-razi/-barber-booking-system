@@ -18,9 +18,14 @@ export class TopNavComponent implements OnInit {
   constructor(
     public router: Router,
     private themeService: ThemeService,
-    private authService: AuthService,
+    public authService: AuthService,
     public translateService: TranslateService
-  ) {}
+  ) {
+    // Initialize synchronously so isBarberArea is correct on the VERY FIRST render
+    // (before ngOnInit fires). authService.currentUserValue is already populated
+    // from localStorage at this point.
+    this.currentUser = this.authService.currentUserValue;
+  }
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
@@ -37,11 +42,23 @@ export class TopNavComponent implements OnInit {
     });
   }
 
+  get isBarberUser(): boolean {
+    return this.authService.currentUserValue?.role === 'barber';
+  }
+
+  get isOwner(): boolean {
+    return this.authService.isOwner;
+  }
+
   get isBarberArea(): boolean {
     return this.router.url.startsWith('/barber')
         || this.router.url.startsWith('/home')
         || this.router.url.startsWith('/auth')
         || this.router.url === '/';
+  }
+
+  get isAdminArea(): boolean {
+    return this.router.url.startsWith('/admin');
   }
 
   get isLoggedIn(): boolean {

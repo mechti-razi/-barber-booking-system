@@ -8,6 +8,17 @@
   background: transparent;
   animation: fadeUp 0.4s ease;
   max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  .profile-page {
+    min-height: unset;
+    max-width: 1400px;
+    padding: 32px 48px;
+  }
 }
 
 @keyframes fadeUp {
@@ -241,6 +252,47 @@
 }
 
 /* ── Responsive ── */
+@media (min-width: 641px) and (max-width: 1400px) {
+  /* Laptop tweaks (do NOT affect mobile ≤ 640px) */
+  .profile-page {
+    padding: 26px 32px;
+    max-width: 1400px;
+  }
+
+  .hero-card {
+    padding: 20px 22px;
+    gap: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .pw-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 1101px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .pw-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .profile-page { padding: 20px 16px; }
   .hero-card { flex-direction: column; text-align: center; }
@@ -441,79 +493,152 @@
 
 
 /* ══ LIGHT MODE ══════════════════════════════════════════ */
-:host-context([data-theme="light"]) .profile-page { background: transparent; }
-:host-context([data-theme="light"]) .page-title { color: #1a1a2e; }
-:host-context([data-theme="light"]) .page-subtitle { color: #4a4a6a; }
 
-/* Hero card */
+/* ── Page background ── */
+:host-context([data-theme="light"]) .profile-page {
+  background: transparent;
+}
+
+/* ── Page Header ── */
+:host-context([data-theme="light"]) .page-header {
+  padding: 20px 28px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+:host-context([data-theme="light"]) .page-title {
+  color: #0f172a;
+  font-size: 1.65rem;
+}
+:host-context([data-theme="light"]) .page-subtitle {
+  color: #64748b;
+}
+
+/* ── Hero card ── */
 :host-context([data-theme="light"]) .hero-card {
-  background: linear-gradient(135deg, rgba(184,134,11,0.06), rgba(184,134,11,0.02));
-  border-color: rgba(184,134,11,0.15);
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 60%, #fff8e1 100%);
+  border: 1px solid rgba(180,130,0,0.18);
+  box-shadow: 0 4px 20px rgba(180,130,0,0.08), 0 1px 4px rgba(0,0,0,0.06);
 }
-:host-context([data-theme="light"]) .hero-name { color: #1a1a2e; }
-:host-context([data-theme="light"]) .hero-spec { color: #b8860b; }
-:host-context([data-theme="light"]) .hero-meta-item { color: #4a4a6a; }
-:host-context([data-theme="light"]) .hero-meta-icon { stroke: #8a8aaa; }
+:host-context([data-theme="light"]) .hero-name   { color: #0f172a; }
+:host-context([data-theme="light"]) .hero-spec   { color: #92650a; font-weight: 600; }
+:host-context([data-theme="light"]) .hero-meta-item { color: #475569; }
+:host-context([data-theme="light"]) .hero-meta-icon { stroke: #94a3b8; }
+:host-context([data-theme="light"]) .star-icon   { color: #d97706; }
 
-/* Tab bar */
-:host-context([data-theme="light"]) .tab-bar { border-bottom-color: rgba(0,0,0,0.08); }
-:host-context([data-theme="light"]) .tab-btn { color: #4a4a6a; }
-:host-context([data-theme="light"]) .tab-btn:hover { color: #1a1a2e; }
+/* ── Tab bar ── */
+:host-context([data-theme="light"]) .tab-bar {
+  background: #f1f5f9;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+:host-context([data-theme="light"]) .tab-btn {
+  color: #64748b;
+  font-weight: 600;
+}
+:host-context([data-theme="light"]) .tab-btn:hover:not(.active) {
+  color: #0f172a;
+  background: rgba(0,0,0,0.05);
+}
 :host-context([data-theme="light"]) .tab-btn.active {
-  color: #b8860b;
-  border-bottom-color: #b8860b;
+  background: #ffffff;
+  color: #92650a;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
 }
 
-/* Form card */
+/* ── Form card ── */
 :host-context([data-theme="light"]) .form-card {
   background: #ffffff;
-  border-color: rgba(0,0,0,0.08);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
 }
-:host-context([data-theme="light"]) .form-section { border-color: rgba(0,0,0,0.06); }
-:host-context([data-theme="light"]) .section-label { color: #4a4a6a; }
 
-/* Inputs */
-:host-context([data-theme="light"]) .form-group label { color: #4a4a6a; }
+/* ── Section label & divider ── */
+:host-context([data-theme="light"]) .section-label {
+  color: #92650a;
+  border-bottom-color: rgba(180,130,0,0.15);
+  letter-spacing: 0.08em;
+}
+
+/* ── Form labels ── */
+:host-context([data-theme="light"]) .form-group label {
+  color: #475569;
+}
+
+/* ── Inputs / Select / Textarea ── */
 :host-context([data-theme="light"]) .form-group input,
 :host-context([data-theme="light"]) .form-group select,
 :host-context([data-theme="light"]) .form-group textarea {
-  background: #f8f8fb;
-  border-color: rgba(0,0,0,0.1);
-  color: #1a1a2e;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
 }
 :host-context([data-theme="light"]) .form-group input::placeholder,
-:host-context([data-theme="light"]) .form-group textarea::placeholder { color: #8a8aaa; }
+:host-context([data-theme="light"]) .form-group textarea::placeholder {
+  color: #94a3b8;
+}
 :host-context([data-theme="light"]) .form-group input:focus,
 :host-context([data-theme="light"]) .form-group select:focus,
 :host-context([data-theme="light"]) .form-group textarea:focus {
-  border-color: #b8860b;
-  background: rgba(184,134,11,0.03);
-  box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
+  border-color: #d97706;
+  background: #fffdf5;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.12);
 }
-:host-context([data-theme="light"]) .form-group select option { background: #ffffff; color: #1a1a2e; }
-:host-context([data-theme="light"]) .field-hint { color: #8a8aaa; }
+:host-context([data-theme="light"]) .form-group select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+:host-context([data-theme="light"]) .field-hint { color: #94a3b8; }
 
-/* Shop photo picker */
+/* ── Form actions divider ── */
+:host-context([data-theme="light"]) .form-actions {
+  border-top-color: #f1f5f9;
+  background: #fafafa;
+}
+
+/* ── Save button ── */
+:host-context([data-theme="light"]) .save-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 14px rgba(217,119,6,0.25);
+}
+:host-context([data-theme="light"]) .save-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(217,119,6,0.38);
+}
+
+/* ── Shop photo picker ── */
 :host-context([data-theme="light"]) .shop-img-picker {
-  background: #f8f8fb;
-  border-color: rgba(0,0,0,0.1);
+  background: #f8fafc;
+  border-color: #e2e8f0;
 }
-:host-context([data-theme="light"]) .shop-img-placeholder {
-  background: rgba(0,0,0,0.03);
+:host-context([data-theme="light"]) .shop-img-picker:hover {
+  border-color: #d97706;
+  background: #fffdf5;
 }
-:host-context([data-theme="light"]) .picker-label { color: #4a4a6a; }
-:host-context([data-theme="light"]) .picker-sub   { color: #8a8aaa; }
+:host-context([data-theme="light"]) .picker-icon-wrap {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+:host-context([data-theme="light"]) .shop-img-picker:hover .picker-icon-wrap {
+  background: rgba(217,119,6,0.1);
+  color: #d97706;
+}
+:host-context([data-theme="light"]) .picker-label { color: #0f172a; }
+:host-context([data-theme="light"]) .picker-sub   { color: #94a3b8; }
 
-/* Alerts */
+/* ── Alerts ── */
 :host-context([data-theme="light"]) .form-alert.success {
-  background: rgba(16,185,129,0.07);
-  border-color: rgba(16,185,129,0.2);
-  color: #059669;
+  background: #f0fdf4;
+  border-color: rgba(22,163,74,0.25);
+  color: #16a34a;
 }
 :host-context([data-theme="light"]) .form-alert.error {
-  background: rgba(239,68,68,0.07);
-  border-color: rgba(239,68,68,0.2);
+  background: #fef2f2;
+  border-color: rgba(220,38,38,0.25);
   color: #dc2626;
 }
 :host-context([data-theme="light"]) .pw-error { color: #dc2626; }
+
+/* ── Page loader ── */
+:host-context([data-theme="light"]) .page-loader { color: #64748b; }

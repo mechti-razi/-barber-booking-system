@@ -14,6 +14,15 @@ export class ProfileComponent implements OnInit {
   loading = true;
   loggingOut = false;
 
+  // Bottom sheets
+  faqOpen      = false;
+  privacyOpen  = false;
+  faqOpenIndex = -1;
+
+  openFaq():     void { this.faqOpen     = true;  this.faqOpenIndex = -1; }
+  openPrivacy(): void { this.privacyOpen = true; }
+  toggleFaq(i: number): void { this.faqOpenIndex = this.faqOpenIndex === i ? -1 : i; }
+
   // Stats
   totalBookings  = 0;
   completedCount = 0;
@@ -22,6 +31,8 @@ export class ProfileComponent implements OnInit {
 
   // Push notifications
   pushToggling = false;
+
+
 
   constructor(
     private authService: AuthService,
@@ -98,6 +109,8 @@ export class ProfileComponent implements OnInit {
     };
     return map[this.currentUser?.role] || '#6b7280';
   }
+
+
 
   get memberSince(): string {
     if (!this.currentUser?.created_at) return '';

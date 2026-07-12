@@ -12,24 +12,30 @@
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 32px);
-  max-width: 1080px;
+  max-width: 1120px;
   z-index: 1000;
   font-family: 'Inter', sans-serif;
+}
+
+.top-nav.barber-nav {
+  max-width: 1400px;
 }
 
 .top-nav-inner {
   display: flex;
   align-items: center;
-  height: 58px;
-  padding: 0 8px 0 12px;
-  background: var(--topnav-bg, rgba(13, 15, 25, 0.82));
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 20px;
-  border: 1px solid var(--topnav-border, rgba(255, 255, 255, 0.07));
+  height: 62px;
+  padding: 0 10px 0 14px;
+  background: var(--topnav-bg, rgba(10, 11, 20, 0.88));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-radius: 22px;
+  border: 1px solid var(--topnav-border, rgba(255, 255, 255, 0.08));
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 1px rgba(245, 158, 11, 0.06);
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(245, 158, 11, 0.04);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -45,25 +51,26 @@
 .brand-logo {
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.32);
   flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
 }
 
-.brand-logo-svg {
-  width: 20px;
-  height: 20px;
-  color: #fff;
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
 .brand-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .brand-name {
@@ -80,69 +87,131 @@
   font-weight: 700;
   color: #f59e0b;
   background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.22);
   border-radius: 20px;
   padding: 1px 7px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   width: fit-content;
 }
 
+.brand-tag.admin-tag {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.28);
+}
+
 /* ══════════════════════════════════════════════════════
-   CENTER — Nav Links  (desktop only)
+   CENTER — Nav Links
 ══════════════════════════════════════════════════════ */
 .links {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 1px;
+  /* pill container for all links */
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 16px;
+  padding: 4px;
+  margin: 0 20px;
 }
 
 .links a {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #6b7280;
-  font-size: 13.5px;
+  color: rgba(156, 163, 175, 0.85);
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  padding: 8px 14px;
+  padding: 7px 15px;
   border-radius: 12px;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
   white-space: nowrap;
   position: relative;
+  letter-spacing: 0.01em;
 }
 
-.links a svg {
+/* Icon wrapper for better visual weight */
+.links a .nav-icon {
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.75;
+  transition: opacity 0.18s ease, transform 0.2s ease;
+}
+
+.links a .nav-icon svg {
   width: 15px;
   height: 15px;
   stroke: currentColor;
-  flex-shrink: 0;
+  display: block;
 }
 
 .links a:hover {
-  color: #d1d5db;
-  background: rgba(255, 255, 255, 0.05);
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
+.links a:hover .nav-icon {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* ── Active state ────────────────────── */
 .links a.active {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   font-weight: 700;
 }
 
-.links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #f59e0b;
-  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+.links a.active .nav-icon {
+  opacity: 1;
+}
+
+/* Client & Barber active — amber accent */
+.links.client-links a.active,
+.links.barber-links a.active {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.13);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(245, 158, 11, 0.1),
+    0 0 0 1px rgba(245, 158, 11, 0.15);
+}
+
+.links.client-links a.active .nav-icon,
+.links.barber-links a.active .nav-icon {
+  filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.5));
+}
+
+/* Admin active — violet accent */
+.links.admin-links a.active {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.13);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(167, 139, 250, 0.1),
+    0 0 0 1px rgba(167, 139, 250, 0.15);
+}
+
+.links.admin-links a.active .nav-icon {
+  filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.45));
+}
+
+/* Admin links container tint */
+.links.admin-links {
+  background: rgba(167, 139, 250, 0.04);
+  border-color: rgba(167, 139, 250, 0.1);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -160,7 +229,7 @@
 .controls {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .ctrl-btn {
@@ -174,7 +243,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
   flex-shrink: 0;
 }
 
@@ -184,28 +253,30 @@
 }
 
 .ctrl-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.09);
   color: #f1f5f9;
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.13);
+  transform: scale(1.05);
 }
 
 .lang-btn {
   width: auto;
-  padding: 0 10px;
+  padding: 0 11px;
   gap: 5px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   color: #f59e0b;
   border-color: rgba(245, 158, 11, 0.22);
-  background: rgba(245, 158, 11, 0.05);
+  background: rgba(245, 158, 11, 0.06);
   font-family: 'Inter', sans-serif;
 }
 
 .lang-btn:hover {
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.13);
+  border-color: rgba(245, 158, 11, 0.38);
   color: #fbbf24;
+  transform: scale(1.03);
 }
 
 /* Vertical Divider */
@@ -214,24 +285,26 @@
   height: 26px;
   background: rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
+  margin: 0 2px;
 }
 
-/* User Card — avatar + name + role + logout in one pill */
+/* User Card */
 .user-card {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 4px 4px 4px 5px;
+  gap: 8px;
+  padding: 4px 6px 4px 5px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 40px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   cursor: default;
 }
 
 .user-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(245, 158, 11, 0.18);
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.05);
 }
 
 .user-avatar {
@@ -248,6 +321,7 @@
   border: 2px solid rgba(245, 158, 11, 0.3);
   flex-shrink: 0;
   letter-spacing: -0.3px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
 }
 
 .user-details {
@@ -264,7 +338,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 90px;
+  max-width: 96px;
 }
 
 .user-role {
@@ -287,7 +361,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
   flex-shrink: 0;
   margin-left: 1px;
 }
@@ -298,28 +372,38 @@
 }
 
 .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.28);
-  transform: scale(1.08);
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.32);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
 }
 
 /* ══════════════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .links a span {
+    display: none;
+  }
+  .links a {
+    padding: 7px 10px;
+  }
+  .links {
+    margin: 0 10px;
+    gap: 0;
+  }
+}
 
-/* Mobile — hide nav links (bottom-nav handles navigation)
-   Also hide user name/role text to save space */
 @media (max-width: 768px) {
   .links { display: none; }
 
   .user-details { display: none; }
-
   .user-card {
-    padding: 4px;
-    border-radius: 50%;
-    gap: 0;
-    background: transparent;
-    border-color: transparent;
+    padding: 3px 6px 3px 3px;
+    border-radius: 20px;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .user-card:hover {
@@ -328,13 +412,115 @@
   }
 
   .logout-btn {
-    display: none;
+    display: flex;
   }
 }
 
-/* Compact layout for very small screens */
 @media (max-width: 360px) {
   .brand-info { display: none; }
   .lang-btn span { display: none; }
   .lang-btn { width: 34px; padding: 0; }
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHT MODE
+══════════════════════════════════════════════════════ */
+:host-context([data-theme="light"]) .top-nav-inner {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.09);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 28px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+:host-context([data-theme="light"]) .brand-name {
+  color: #1a1a2e;
+}
+
+:host-context([data-theme="light"]) .links {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+:host-context([data-theme="light"]) .links a {
+  color: #64748b;
+}
+
+:host-context([data-theme="light"]) .links a:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+:host-context([data-theme="light"]) .links.client-links a.active,
+:host-context([data-theme="light"]) .links.barber-links a.active {
+  color: #92400e;
+  background: rgba(184, 134, 11, 0.12);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(184, 134, 11, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+:host-context([data-theme="light"]) .links.client-links a.active .nav-icon,
+:host-context([data-theme="light"]) .links.barber-links a.active .nav-icon {
+  filter: drop-shadow(0 0 4px rgba(184, 134, 11, 0.4));
+}
+
+:host-context([data-theme="light"]) .links.admin-links {
+  background: rgba(124, 58, 237, 0.04);
+  border-color: rgba(124, 58, 237, 0.12);
+}
+
+:host-context([data-theme="light"]) .links.admin-links a.active {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.1);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(124, 58, 237, 0.2);
+}
+
+:host-context([data-theme="light"]) .divider {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:host-context([data-theme="light"]) .ctrl-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #64748b;
+}
+
+:host-context([data-theme="light"]) .ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1a1a2e;
+}
+
+:host-context([data-theme="light"]) .lang-btn {
+  color: #b8860b;
+  border-color: rgba(184, 134, 11, 0.22);
+  background: rgba(184, 134, 11, 0.06);
+}
+
+:host-context([data-theme="light"]) .lang-btn:hover {
+  background: rgba(184, 134, 11, 0.12);
+  border-color: rgba(184, 134, 11, 0.35);
+}
+
+:host-context([data-theme="light"]) .user-card {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:host-context([data-theme="light"]) .user-card:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(184, 134, 11, 0.25);
+}
+
+:host-context([data-theme="light"]) .user-name {
+  color: #1a1a2e;
+}
+
+:host-context([data-theme="light"]) .user-role {
+  color: #b8860b;
 }

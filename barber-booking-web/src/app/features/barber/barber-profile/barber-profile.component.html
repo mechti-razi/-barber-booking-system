@@ -121,8 +121,12 @@
         </button>
       </div>
       <div class="form-section">
-        <h3 class="section-label">{{ 'barber.profile.shopDescription' | translate }}</h3>
+        <h3 class="section-label">Shop Profile</h3>
         <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Shop Name</label>
+            <input type="text" [(ngModel)]="shop.name" placeholder="Enter shop name" id="shop-name" />
+          </div>
           <div class="form-group full-width">
             <label>{{ 'barber.profile.shopDescription' | translate }}</label>
             <textarea [(ngModel)]="shop.description" rows="5" [placeholder]="'barber.profile.descriptionPh' | translate" id="shop-description"></textarea>
@@ -135,9 +139,9 @@
         <div class="form-grid">
           <div class="form-group"><label>{{ 'barber.profile.shopPhone' | translate }}</label><input type="tel" [(ngModel)]="shop.phone" placeholder="+1 555 000 0000" id="shop-phone" /></div>
           <div class="form-group"><label>{{ 'barber.profile.shopEmail' | translate }}</label><input type="email" [(ngModel)]="shop.email" placeholder="shop@example.com" id="shop-email" /></div>
-          <div class="form-group full-width" *ngIf="shop.address">
-            <label>{{ 'barber.profile.addressReadOnly' | translate }}</label>
-            <input type="text" [value]="shop.address" readonly style="opacity:0.55;cursor:not-allowed" />
+          <div class="form-group full-width">
+            <label>Shop Address</label>
+            <input type="text" [(ngModel)]="shop.address" placeholder="Enter shop address" id="shop-address" />
           </div>
         </div>
       </div>

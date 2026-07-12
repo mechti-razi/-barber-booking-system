@@ -106,6 +106,10 @@ export class AppointmentService {
     return this.http.post<any>(`${this.apiUrl}/barber-panel/reservations`, data);
   }
 
+  submitReview(data: { appointment_id: number; rating: number; comment: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/reviews`, data);
+  }
+
   updateAppointment(id: number, data: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/appointments/${id}`, data).pipe(
       catchError(() => {

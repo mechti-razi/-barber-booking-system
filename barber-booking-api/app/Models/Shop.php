@@ -56,7 +56,8 @@ class Shop extends Model
 
     /**
      * Get the shop's logo URL.
-     * Dynamically rewrites 'localhost' or '127.0.0.1' base URLs to match the client's requesting host/IP.
+     * Dynamically rewrites any stored base URL to match the current request's host/IP+port,
+     * so images keep working even when the server IP changes.
      */
     public function getLogoUrlAttribute($value)
     {
@@ -66,16 +67,15 @@ class Shop extends Model
 
         if (filter_var($value, FILTER_VALIDATE_URL) && !app()->runningInConsole()) {
             $parsed = parse_url($value);
-            if (isset($parsed['host']) && ($parsed['host'] === 'localhost' || $parsed['host'] === '127.0.0.1')) {
-                $request = request();
-                $host = $request->getHost();
-                $port = $request->getPort();
-                $scheme = $request->getScheme();
+            if (isset($parsed['host'])) {
+                $request    = request();
+                $scheme     = $request->getScheme();
+                $host       = $request->getHost();
+                $port       = $request->getPort();
+                $portStr    = ($port && !in_array($port, [80, 443])) ? ':' . $port : '';
+                $newBase    = $scheme . '://' . $host . $portStr;
 
-                $portStr = $port ? ':' . $port : '';
-                $newBase = $scheme . '://' . $host . $portStr;
-
-                $path = $parsed['path'] ?? '';
+                $path  = $parsed['path'] ?? '';
                 $query = isset($parsed['query']) ? '?' . $parsed['query'] : '';
                 return $newBase . $path . $query;
             }

@@ -224,9 +224,11 @@ export class BarberProfileComponent implements OnInit {
     this.shopErrorMessage = '';
 
     this.http.put<any>(`${this.apiUrl}/barber-panel/shop`, {
+      name:        this.shop.name,
       description: this.shop.description,
       phone:       this.shop.phone,
-      email:       this.shop.email
+      email:       this.shop.email,
+      address:     this.shop.address
     }).subscribe({
       next: () => {
         this.savingShop = false;

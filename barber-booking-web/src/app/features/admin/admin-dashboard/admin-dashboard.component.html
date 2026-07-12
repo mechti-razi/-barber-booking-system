@@ -5,73 +5,6 @@
   </div>
 
   <div *ngIf="!loading" class="dashboard-wrapper">
-    <!-- Desktop Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="logo-area">
-        <svg class="logo-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16" />
-          <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12" />
-          <circle cx="32" cy="32" r="2.5" fill="currentColor" />
-        </svg>
-        <span class="logo-text">Barber<span class="accent">Book</span></span>
-      </div>
-
-      <nav class="sidebar-nav">
-        <button [class.active]="activeTab === 'overview'" (click)="changeTab('overview')">
-          <span class="nav-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"/>
-              <line x1="12" y1="20" x2="12" y2="4"/>
-              <line x1="6" y1="20" x2="6" y2="14"/>
-            </svg>
-          </span>
-          Overview & Analytics
-        </button>
-        <button [class.active]="activeTab === 'barbers'" (click)="changeTab('barbers')">
-          <span class="nav-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          </span>
-          Manage Barbers
-        </button>
-        <button [class.active]="activeTab === 'settings'" (click)="changeTab('settings')">
-          <span class="nav-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-          </span>
-          Subscription Settings
-        </button>
-        <button [class.active]="activeTab === 'services'" (click)="changeTab('services')">
-          <span class="nav-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-          </span>
-          Manage Services
-        </button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="user-pill">
-          <div class="avatar">{{ currentUser?.name?.charAt(0) }}</div>
-          <div class="info">
-            <span class="name">{{ currentUser?.name }}</span>
-            <span class="role">Administrator</span>
-          </div>
-        </div>
-        <button (click)="logout()" class="btn btn-secondary btn-logout">Logout</button>
-      </div>
-    </aside>
 
     <!-- Main Workspace Area -->
     <main class="main-content-area">
@@ -627,38 +560,53 @@
       </div>
 
       <form (ngSubmit)="submitBarber()">
-        <div class="form-group">
-          <label for="b-name">Full Name</label>
-          <input 
-            type="text" 
-            id="b-name" 
-            [(ngModel)]="newBarber.name" 
-            name="name" 
-            placeholder="e.g. Jean Larson"
-            required
-          />
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="b-name">Full Name</label>
+            <input 
+              type="text" 
+              id="b-name" 
+              [(ngModel)]="newBarber.name" 
+              name="name" 
+              placeholder="e.g. Jean Larson"
+              required
+            />
+          </div>
+
+          <div class="form-group half">
+            <label for="b-shop-name">Shop Name <span style="font-weight:400;opacity:0.6">(optional)</span></label>
+            <input 
+              type="text" 
+              id="b-shop-name" 
+              [(ngModel)]="newBarber.shop_name" 
+              name="shop_name" 
+              placeholder="e.g. Jean's Barber Shop"
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="b-email">Business Email (Optional)</label>
-          <input 
-            type="email" 
-            id="b-email" 
-            [(ngModel)]="newBarber.email" 
-            name="email" 
-            placeholder="e.g. jean@barberbook.com"
-          />
-        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="b-email">Business Email (Optional)</label>
+            <input 
+              type="email" 
+              id="b-email" 
+              [(ngModel)]="newBarber.email" 
+              name="email" 
+              placeholder="e.g. jean@coupena.com"
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="b-phone">Phone Number (Optional)</label>
-          <input 
-            type="text" 
-            id="b-phone" 
-            [(ngModel)]="newBarber.phone" 
-            name="phone" 
-            placeholder="e.g. +1 555-0102"
-          />
+          <div class="form-group half">
+            <label for="b-phone">Phone Number (Optional)</label>
+            <input 
+              type="text" 
+              id="b-phone" 
+              [(ngModel)]="newBarber.phone" 
+              name="phone" 
+              placeholder="e.g. +1 555-0102"
+            />
+          </div>
         </div>
 
         <div class="form-row">
@@ -684,26 +632,30 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="b-sub">Subscription Type</label>
-          <select id="b-sub" [(ngModel)]="newBarber.subscription_type" (change)="onSubscriptionTypeChange()" name="subscription_type">
-            <option value="">No Subscription</option>
-            <option value="monthly">Monthly (1 Month) - 49.00 DT</option>
-            <option value="quarterly">Quarterly (3 Months) - 130.00 DT</option>
-            <option value="yearly">Yearly (12 Months) - 480.00 DT</option>
-          </select>
-        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="b-sub">Subscription Type</label>
+            <select id="b-sub" [(ngModel)]="newBarber.subscription_type" (change)="onSubscriptionTypeChange()" name="subscription_type">
+              <option value="">No Subscription</option>
+              <option value="monthly">Monthly — 49.00 DT</option>
+              <option value="quarterly">Quarterly — 130.00 DT</option>
+              <option value="yearly">Yearly — 480.00 DT</option>
+            </select>
+          </div>
 
-        <div *ngIf="calculatedEndDate" class="form-group end-date-display">
-          <label>Subscription End Date</label>
-          <div class="end-date-value">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span>{{ calculatedEndDate }}</span>
+          <div class="form-group half" *ngIf="calculatedEndDate">
+            <label>Subscription End Date</label>
+            <div class="end-date-display" style="margin-top:0">
+              <div class="end-date-value">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>{{ calculatedEndDate }}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -747,7 +699,7 @@
             id="e-email" 
             [(ngModel)]="editBarber.email" 
             name="edit_email" 
-            placeholder="e.g. jean@barberbook.com"
+            placeholder="e.g. jean@coupena.com"
           />
         </div>
 

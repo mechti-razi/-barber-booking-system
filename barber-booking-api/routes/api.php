@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/reservations', [BarberPanelController::class, 'createReservation']);
             Route::get('/schedule', [BarberPanelController::class, 'getSchedule']);
             Route::put('/schedule', [BarberPanelController::class, 'saveSchedule']);
+            Route::get('/shop-stats', [BarberPanelController::class, 'shopStats']);
             Route::get('/staff', [BarberPanelController::class, 'staff']);
             Route::post('/staff', [BarberPanelController::class, 'hireStaff']);
             Route::delete('/staff/{barber_id}', [BarberPanelController::class, 'removeStaff']);

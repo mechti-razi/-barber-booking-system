@@ -30,31 +30,54 @@ class ReviewController extends Controller
 
     /**
      * Store a newly created review.
+     * Only the client who owns the completed appointment may leave a review.
      */
     public function store(Request $request)
     {
+        $user = $request->user();
+
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'barber_id' => 'required|exists:barbers,id',
-            'appointment_id' => 'nullable|exists:appointments,id|unique:reviews',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string',
+            'appointment_id' => 'required|exists:appointments,id',
+            'rating'         => 'required|integer|min:1|max:5',
+            'comment'        => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $review = Review::create($request->all());
-        
-        // Update barber rating
+        // Load the appointment
+        $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+
+        // Must be the client who booked
+        if ($appointment->user_id !== $user->id) {
+            return response()->json(['error' => 'You can only review your own appointments.'], 403);
+        }
+
+        // Appointment must be completed
+        if ($appointment->status !== 'completed') {
+            return response()->json(['error' => 'You can only review a completed appointment.'], 422);
+        }
+
+        // One review per appointment
+        if (Review::where('appointment_id', $appointment->id)->exists()) {
+            return response()->json(['error' => 'You have already reviewed this appointment.'], 422);
+        }
+
+        $review = Review::create([
+            'user_id'        => $user->id,
+            'barber_id'      => $appointment->barber_id,
+            'appointment_id' => $appointment->id,
+            'rating'         => $request->rating,
+            'comment'        => $request->comment,
+        ]);
+
+        // Recalculate barber average rating
         $barber = $review->barber;
-        $allReviews = $barber->reviews;
-        $avgRating = $allReviews->avg('rating');
-        $barber->rating = round($avgRating, 2);
+        $barber->rating = round($barber->reviews()->avg('rating'), 2);
         $barber->save();
-        
-        return response()->json($review, 201);
+
+        return response()->json($review->load(['user', 'barber']), 201);
     }
 
     /**

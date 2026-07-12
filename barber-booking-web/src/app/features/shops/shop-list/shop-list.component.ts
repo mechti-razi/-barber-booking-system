@@ -13,7 +13,7 @@ export class ShopListComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private shopService: ShopService) {}
+  constructor(public shopService: ShopService) {}
 
   ngOnInit(): void {
     this.loadShops();

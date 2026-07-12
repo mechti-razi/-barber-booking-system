@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class BarberController extends Controller
 {
@@ -58,11 +59,15 @@ class BarberController extends Controller
      * Store a newly created barber.
      * Accepts either an existing user_id OR name/email/password to create
      * the user account (admin "Add Barber" flow).
+     * If no shop_id is provided, a new shop is automatically created for the barber.
      */
     public function store(Request $request)
     {
         $rules = [
-            'shop_id'               => 'sometimes|exists:shops,id',
+            'shop_id'               => 'sometimes|nullable|exists:shops,id',
+            'shop_name'             => 'sometimes|nullable|string|max:255',
+            'shop_address'          => 'sometimes|nullable|string',
+            'shop_phone'            => 'sometimes|nullable|string|max:20',
             'specialization'        => 'nullable|string|max:255',
             'experience_years'      => 'nullable|integer|min:0',
             'experience'            => 'nullable|string|max:255',
@@ -89,13 +94,28 @@ class BarberController extends Controller
 
         $data = $request->all();
 
-        // Resolve shop_id: explicit > first shop > error
+        // Resolve shop_id: explicit > create new shop for this barber
         if (empty($data['shop_id'])) {
-            $shop = Shop::first();
-            if (!$shop) {
-                return response()->json(['errors' => ['shop_id' => ['No shop exists yet.']]], 422);
+            $barberName = $data['name'] ?? 'New Barber';
+            $shopName   = !empty($data['shop_name']) ? $data['shop_name'] : $barberName . "'s Shop";
+            $slug       = \Str::slug($shopName);
+
+            // Ensure slug uniqueness
+            $baseSlug = $slug;
+            $i = 1;
+            while (Shop::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $i++;
             }
-            $data['shop_id'] = $shop->id;
+
+            // We need the user first for owner_id — flag to create shop after user
+            $data['_pending_shop'] = [
+                'name'    => $shopName,
+                'slug'    => $slug,
+                'address' => $data['shop_address'] ?? 'Address not set',
+                'phone'   => $data['shop_phone'] ?? ($data['phone'] ?? '0000000000'),
+                'email'   => $data['email'] ?? ($slug . '@coupena.local'),
+                'status'  => 'active',
+            ];
         }
 
         // Create the user account when credentials are provided
@@ -103,25 +123,50 @@ class BarberController extends Controller
             // Auto-generate a unique email if none provided
             if (empty($data['email'])) {
                 $slug = strtolower(preg_replace('/\s+/', '.', trim($data['name'])));
-                $base = $slug . '@barberbook.local';
+                $base = $slug . '@coupena.local';
                 $email = $base;
                 $i = 1;
                 while (User::where('email', $email)->exists()) {
-                    $email = $slug . $i . '@barberbook.local';
+                    $email = $slug . $i . '@coupena.local';
                     $i++;
                 }
                 $data['email'] = $email;
             }
 
-            $user = User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
-                'phone'    => $data['phone'] ?? null,
-                'password' => Hash::make($data['password'] ?? 'password'),
-                'role'     => 'barber',
-                'shop_id'  => $data['shop_id'],
-            ]);
-            $data['user_id'] = $user->id;
+            // If we need to create a shop, do it now that we have the user data
+            if (isset($data['_pending_shop'])) {
+                $shopData = $data['_pending_shop'];
+                unset($data['_pending_shop']);
+
+                // Create user first (without shop_id initially)
+                $user = User::create([
+                    'name'     => $data['name'],
+                    'email'    => $data['email'],
+                    'phone'    => $data['phone'] ?? null,
+                    'password' => Hash::make($data['password'] ?? 'password'),
+                    'role'     => 'barber',
+                ]);
+
+                // Now create shop with the real owner_id
+                $shop = Shop::create(array_merge($shopData, ['owner_id' => $user->id]));
+
+                // Update user with shop_id
+                $user->update(['shop_id' => $shop->id]);
+
+                $data['shop_id']   = $shop->id;
+                $data['user_id']   = $user->id;
+                $data['_is_owner'] = true; // this barber owns the new shop
+            } else {
+                $user = User::create([
+                    'name'     => $data['name'],
+                    'email'    => $data['email'],
+                    'phone'    => $data['phone'] ?? null,
+                    'password' => Hash::make($data['password'] ?? 'password'),
+                    'role'     => 'barber',
+                    'shop_id'  => $data['shop_id'],
+                ]);
+                $data['user_id'] = $user->id;
+            }
         }
 
         // Normalize experience string ("5 years") into experience_years if needed
@@ -150,6 +195,7 @@ class BarberController extends Controller
             'experience_years'       => $data['experience_years'] ?? 0,
             'bio'                    => $data['bio'] ?? null,
             'is_active'              => $isActive,
+            'is_owner'               => $data['_is_owner'] ?? false,
             'subscription_type'      => $subscriptionType,
             'subscription_expiry_date' => $expiryDate,
         ]);

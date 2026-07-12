@@ -22,6 +22,8 @@ export class TranslateService {
 
   /** Call once at app startup */
   init(): Observable<any> {
+    // Clear in-memory cache so any previously broken data is discarded
+    this.cache = {};
     const saved = localStorage.getItem(this.storageKey) as Lang | null;
     const lang: Lang = saved === 'fr' ? 'fr' : 'en';
     return this.loadLang(lang);
@@ -44,14 +46,16 @@ export class TranslateService {
       return of(this.translations);
     }
 
-    return this.http.get<Record<string, any>>(`/assets/i18n/${lang}.json`).pipe(
+    // Cache-bust with a build timestamp so stale browser cache doesn't serve broken JSON
+    const bust = Date.now();
+    return this.http.get<Record<string, any>>(`/assets/i18n/${lang}.json?v=${bust}`).pipe(
       tap(data => {
         this.cache[lang] = data;
         this.translations = data;
         this._lang$.next(lang);
       }),
-      catchError(() => {
-        console.warn(`[TranslateService] Could not load ${lang}.json — falling back to keys`);
+      catchError((err) => {
+        console.error(`[TranslateService] Could not load ${lang}.json`, err);
         this.cache[lang] = {};
         this.translations = {};
         this._lang$.next(lang);

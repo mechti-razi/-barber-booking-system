@@ -39,6 +39,10 @@ export class AppointmentCreateComponent implements OnInit {
   selectedBarber  : any         = null;
   selectedService : any         = null;
 
+  /** True when the user arrived from a shop/service page (query params contain shop_id + service_id).
+   *  Hides the "choose a shop" step since it is already pre-filled. */
+  comingFromShop  = false;
+
   // Week navigation
   calendarWeeks  : DayCell[][] = [];
   currentWeekOffset = 0;        // 0 = this week, 1 = next week…
@@ -128,6 +132,11 @@ export class AppointmentCreateComponent implements OnInit {
         const shopId    = this.route.snapshot.queryParamMap.get('shop_id');
         const barberId  = this.route.snapshot.queryParamMap.get('barber_id');
         const serviceId = this.route.snapshot.queryParamMap.get('service_id');
+
+        // Mark as "coming from shop" so the shop-selection step is hidden
+        if (shopId && serviceId) {
+          this.comingFromShop = true;
+        }
 
         console.log('Query params - shopId:', shopId, 'barberId:', barberId, 'serviceId:', serviceId);
         console.log('Is barber:', this.isBarber, 'User shop_id:', this.authService.currentUserValue?.shop_id);

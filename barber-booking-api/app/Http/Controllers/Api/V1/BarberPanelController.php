@@ -52,10 +52,10 @@ class BarberPanelController extends Controller
 
         $barberId = $barber->id;
 
-        // All completed/confirmed appointments for this barber
+        // Only completed appointments count as earned revenue
         $appointments = Appointment::where('barber_id', $barberId)
             ->where('is_subscription', false)
-            ->whereIn('status', ['completed', 'confirmed'])
+            ->where('status', 'completed')
             ->get();
 
         $now        = now();
@@ -95,7 +95,7 @@ class BarberPanelController extends Controller
         $allAppts = Appointment::where('barber_id', $barberId)
             ->where('is_subscription', false)
             ->with('service')
-            ->whereIn('status', ['completed', 'confirmed'])
+            ->where('status', 'completed')
             ->get();
 
         $serviceBreakdown = $allAppts->groupBy(fn($a) => $a->service?->name ?? 'Other')
@@ -106,7 +106,7 @@ class BarberPanelController extends Controller
 
         // Top clients by spend
         $topClients = Appointment::where('barber_id', $barberId)
-            ->whereIn('status', ['completed', 'confirmed'])
+            ->where('status', 'completed')
             ->with('user')
             ->get()
             ->groupBy('user_id')
@@ -536,10 +536,10 @@ class BarberPanelController extends Controller
             ->with('user')
             ->firstOrFail();
 
-        // 1. Calculate Earnings (completed/confirmed appointments)
+        // 1. Calculate Earnings (completed appointments only)
         $appointments = Appointment::where('barber_id', $target->id)
             ->where('is_subscription', false)
-            ->whereIn('status', ['completed', 'confirmed'])
+            ->where('status', 'completed')
             ->get();
 
         $now = now();
@@ -605,6 +605,137 @@ class BarberPanelController extends Controller
 
 
     // ─────────────────────────────────────────────────────────
+    //  GET /barber-panel/shop-stats  (owner only)
+    //  Aggregate statistics for the whole shop across all staff
+    // ─────────────────────────────────────────────────────────
+    public function shopStats(Request $request)
+    {
+        $owner = $this->requireOwner($request);
+        $shopId = $owner->shop_id;
+
+        $now        = now();
+        $today      = $now->toDateString();
+        $weekStart  = $now->copy()->startOfWeek()->toDateString();
+        $monthStart = $now->copy()->startOfMonth()->toDateString();
+
+        // All non-subscription appointments for the shop
+        $allAppointments = Appointment::where('shop_id', $shopId)
+            ->where('is_subscription', false)
+            ->with(['barber.user', 'service', 'user'])
+            ->get();
+
+        $completed = $allAppointments->where('status', 'completed');
+
+        // ── Shop-wide KPIs ────────────────────────────────────────────────
+        $kpis = [
+            'today'        => round($completed->where('appointment_date', $today)->sum('total_price'), 2),
+            'week'         => round($completed->where('appointment_date', '>=', $weekStart)->sum('total_price'), 2),
+            'month'        => round($completed->where('appointment_date', '>=', $monthStart)->sum('total_price'), 2),
+            'all_time'     => round($completed->sum('total_price'), 2),
+            'total_staff'  => Barber::where('shop_id', $shopId)->count(),
+            'active_staff' => Barber::where('shop_id', $shopId)->where('is_active', true)->count(),
+            'today_total_appointments' => $allAppointments
+                ->where('appointment_date', $today)
+                ->whereIn('status', ['pending', 'confirmed', 'completed'])
+                ->count(),
+        ];
+
+        // ── Monthly revenue (last 6 months) ──────────────────────────────
+        $monthlyRevenue = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month   = $now->copy()->subMonths($i);
+            $label   = $month->format('M Y');
+            $start   = $month->copy()->startOfMonth()->toDateString();
+            $end     = $month->copy()->endOfMonth()->toDateString();
+            $revenue = $completed->whereBetween('appointment_date', [$start, $end])->sum('total_price');
+            $monthlyRevenue[] = ['label' => $label, 'revenue' => round($revenue, 2)];
+        }
+
+        // ── Appointment status breakdown ──────────────────────────────────
+        $statusSummary = $allAppointments
+            ->groupBy('status')
+            ->map(fn($g) => $g->count())
+            ->toArray();
+
+        // ── Per-staff leaderboard + today's schedule ──────────────────────
+        $staffStats = Barber::where('shop_id', $shopId)
+            ->with('user')
+            ->get()
+            ->map(function ($barber) use ($completed, $allAppointments, $today, $weekStart, $monthStart) {
+                $barberCompleted = $completed->where('barber_id', $barber->id);
+                $barberAll       = $allAppointments->where('barber_id', $barber->id);
+                $barberToday     = $barberAll->where('appointment_date', $today)
+                                             ->whereIn('status', ['pending', 'confirmed', 'completed'])
+                                             ->sortBy('appointment_time');
+
+                return [
+                    'id'               => $barber->id,
+                    'name'             => $barber->user?->name ?? 'Unknown',
+                    'specialization'   => $barber->specialization,
+                    'rating'           => $barber->rating,
+                    'is_active'        => $barber->is_active,
+                    'is_owner'         => $barber->is_owner,
+                    'revenue' => [
+                        'today'    => round($barberCompleted->where('appointment_date', $today)->sum('total_price'), 2),
+                        'week'     => round($barberCompleted->where('appointment_date', '>=', $weekStart)->sum('total_price'), 2),
+                        'month'    => round($barberCompleted->where('appointment_date', '>=', $monthStart)->sum('total_price'), 2),
+                        'all_time' => round($barberCompleted->sum('total_price'), 2),
+                    ],
+                    'appointments' => [
+                        'total'          => $barberAll->count(),
+                        'completed'      => $barberCompleted->count(),
+                        'pending'        => $barberAll->where('status', 'pending')->count(),
+                        'cancelled'      => $barberAll->where('status', 'cancelled')->count(),
+                        'today_total'    => $barberToday->count(),
+                        'today_done'     => $barberToday->where('status', 'completed')->count(),
+                        'today_pending'  => $barberToday->whereIn('status', ['pending', 'confirmed'])->count(),
+                    ],
+                    'today_schedule' => $barberToday->values()->map(fn($a) => [
+                        'time'         => substr($a->appointment_time, 0, 5),
+                        'client_name'  => $a->user?->name ?? 'Client',
+                        'service_name' => $a->service?->name ?? '—',
+                        'status'       => $a->status,
+                    ])->values()->toArray(),
+                ];
+            })
+            ->sortByDesc(fn($s) => $s['appointments']['today_total'])
+            ->values()
+            ->toArray();
+
+        // ── Service breakdown across the whole shop ───────────────────────
+        $serviceBreakdown = $completed
+            ->groupBy(fn($a) => $a->service?->name ?? 'Other')
+            ->map(fn($group) => [
+                'count'   => $group->count(),
+                'revenue' => round($group->sum('total_price'), 2),
+            ])
+            ->sortByDesc('revenue')
+            ->toArray();
+
+        // ── Top clients across the whole shop ────────────────────────────
+        $topClients = $completed
+            ->groupBy('user_id')
+            ->map(fn($group) => [
+                'name'   => $group->first()->user?->name ?? 'Unknown',
+                'visits' => $group->count(),
+                'spent'  => round($group->sum('total_price'), 2),
+            ])
+            ->sortByDesc('spent')
+            ->values()
+            ->take(5)
+            ->toArray();
+
+        return response()->json([
+            'kpis'              => $kpis,
+            'monthly_revenue'   => $monthlyRevenue,
+            'status_summary'    => $statusSummary,
+            'staff_stats'       => $staffStats,
+            'service_breakdown' => $serviceBreakdown,
+            'top_clients'       => $topClients,
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────
     //  GET /barber-panel/services
     //  Returns all services for the authenticated barber's shop
     // ─────────────────────────────────────────────────────────
@@ -662,17 +793,19 @@ class BarberPanelController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'name'        => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
             'logo_url'    => 'nullable|url|max:500',
             'phone'       => 'nullable|string|max:30',
             'email'       => 'nullable|email|max:255',
+            'address'     => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $shop->update($request->only(['description', 'logo_url', 'phone', 'email']));
+        $shop->update($request->only(['name', 'description', 'logo_url', 'phone', 'email', 'address']));
 
         return response()->json([
             'message' => 'Shop updated successfully.',
@@ -683,6 +816,7 @@ class BarberPanelController extends Controller
                 'logo_url'    => $shop->logo_url,
                 'phone'       => $shop->phone,
                 'email'       => $shop->email,
+                'address'     => $shop->address,
             ],
         ]);
     }

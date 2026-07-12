@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   featuredShops: any[] = [];
   nextAppointment: any = null;
   loadingShops = true;
+  currentYear = new Date().getFullYear();
 
   steps: { n: string; title: string; desc: string }[] = [];
   reviews = [
@@ -29,13 +30,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private shopService: ShopService,
+    public shopService: ShopService,
     private appointmentService: AppointmentService,
     public translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.currentUserValue;
+    if (this.currentUser) {
+      if (this.currentUser.role === 'barber') {
+        this.router.navigate(['/barber']);
+        return;
+      }
+      if (this.currentUser.role === 'admin') {
+        this.router.navigate(['/admin']);
+        return;
+      }
+    }
     this.buildSteps();
     this.langSub = this.translateService.lang$.subscribe(() => this.buildSteps());
     this.loadFeaturedShops();

@@ -33,13 +33,13 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Clear stale sessions that predate the owner/employee feature (v2)
+    // Clear stale sessions — bump version when Passport client or token format changes
     const sessionVersion = localStorage.getItem('bb_session_v');
-    if (sessionVersion !== '2') {
+    if (sessionVersion !== '3') {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
       localStorage.removeItem('barber_profile');
-      localStorage.setItem('bb_session_v', '2');
+      localStorage.setItem('bb_session_v', '3');
     }
 
     const token = localStorage.getItem('access_token');

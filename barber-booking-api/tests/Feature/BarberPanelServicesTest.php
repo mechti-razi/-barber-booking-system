@@ -25,6 +25,7 @@ class BarberPanelServicesTest extends TestCase
         $barber = Barber::factory()->create([
             'user_id' => $user->id,
             'shop_id' => $shop->id,
+            'is_owner' => true,
         ]);
 
         $service1 = Service::factory()->create(['shop_id' => $shop->id, 'name' => 'Haircut A']);
@@ -51,6 +52,7 @@ class BarberPanelServicesTest extends TestCase
         $barber = Barber::factory()->create([
             'user_id' => $user->id,
             'shop_id' => $shop->id,
+            'is_owner' => true,
         ]);
 
         $response = $this->actingAs($user, 'api')
@@ -84,6 +86,7 @@ class BarberPanelServicesTest extends TestCase
         $barber = Barber::factory()->create([
             'user_id' => $user->id,
             'shop_id' => $shop->id,
+            'is_owner' => true,
         ]);
 
         $service = Service::factory()->create(['shop_id' => $shop->id, 'name' => 'Old Name', 'base_price' => 300]);
@@ -109,6 +112,7 @@ class BarberPanelServicesTest extends TestCase
         $barber = Barber::factory()->create([
             'user_id' => $user->id,
             'shop_id' => $shop->id,
+            'is_owner' => true,
         ]);
 
         $service = Service::factory()->create(['shop_id' => $shop->id]);
@@ -132,6 +136,7 @@ class BarberPanelServicesTest extends TestCase
         $barber = Barber::factory()->create([
             'user_id' => $user->id,
             'shop_id' => $shop->id,
+            'is_owner' => true,
         ]);
 
         $service = Service::factory()->create(['shop_id' => $shop->id, 'is_active' => true]);

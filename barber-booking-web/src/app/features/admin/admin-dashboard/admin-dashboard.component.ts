@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { BarberService } from '../../../core/services/barber.service';
@@ -99,7 +99,7 @@ export class AdminDashboardComponent implements OnInit {
     phone: '',
     specialization: 'Haircut & Styling',
     experience: '5 years',
-    shop_id: 1,
+    shop_name: '',
     subscription_type: ''
   };
   calculatedEndDate: string | null = null;
@@ -164,6 +164,7 @@ export class AdminDashboardComponent implements OnInit {
     private shopService: ShopService,
     private appointmentService: AppointmentService,
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient
   ) {}
 
@@ -174,6 +175,14 @@ export class AdminDashboardComponent implements OnInit {
       this.router.navigate(['/home']);
       return;
     }
+
+    // React to ?tab= query param changes driven by the top navbar links
+    this.route.queryParams.subscribe(params => {
+      const tab = params['tab'];
+      if (tab && ['overview', 'barbers', 'settings'].includes(tab)) {
+        this.changeTab(tab);
+      }
+    });
     
     this.loadActivities();
     this.loadDashboardData();
@@ -221,9 +230,8 @@ export class AdminDashboardComponent implements OnInit {
 
         this.appointments = appData;
 
-        // Load barbers scoped to the admin's shop
-        const shopId = this.shops[0]?.id;
-        this.barberService.getBarbers(shopId).subscribe({
+        // Load all barbers — admin sees across all shops
+        this.barberService.getBarbers().subscribe({
           next: (barbersData) => {
             this.barbers = barbersData;
             this.checkSubscriptionExpiry();
@@ -436,7 +444,7 @@ export class AdminDashboardComponent implements OnInit {
       phone: '',
       specialization: 'Haircut & Styling',
       experience: '5 years',
-      shop_id: this.shops[0]?.id || 1,
+      shop_name: '',
       subscription_type: ''
     };
   }
@@ -451,9 +459,15 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
 
-    // Normalize empty subscription_type to null so API validation passes
+    // Send shop_name so the API can create a new shop for this barber.
+    // If left blank the API will auto-generate one from the barber's name.
     const payload = {
-      ...this.newBarber,
+      name: this.newBarber.name,
+      email: this.newBarber.email || null,
+      phone: this.newBarber.phone || null,
+      specialization: this.newBarber.specialization || null,
+      experience: this.newBarber.experience || null,
+      shop_name: this.newBarber.shop_name || null,
       subscription_type: this.newBarber.subscription_type || null
     };
 
@@ -476,8 +490,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   private reloadBarbers(): void {
-    const shopId = this.shops[0]?.id;
-    this.barberService.getBarbers(shopId).subscribe({
+    // No shop_id filter — admin sees all barbers across all shops
+    this.barberService.getBarbers().subscribe({
       next: (barbersData) => {
         this.barbers = barbersData;
         this.checkSubscriptionExpiry();

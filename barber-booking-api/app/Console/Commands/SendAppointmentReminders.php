@@ -39,16 +39,20 @@ class SendAppointmentReminders extends Command
         $sent     = 0;
 
         // ── 24-hour reminder ─────────────────────────────────────────────────
+        // Window: appointments happening between 23h45m and 24h15m from now
         $window24Start = $now->copy()->addHours(23)->addMinutes(45);
         $window24End   = $now->copy()->addHours(24)->addMinutes(15);
 
+        // Use a raw datetime comparison to correctly handle date-boundary crossovers
         $appointments24h = Appointment::where('reminder_24h_sent', false)
             ->whereIn('status', ['pending', 'confirmed'])
-            ->whereDate('appointment_date', $window24Start->toDateString())
-            ->whereBetween('appointment_time', [
-                $window24Start->format('H:i:s'),
-                $window24End->format('H:i:s'),
-            ])
+            ->whereRaw(
+                "CONCAT(appointment_date, ' ', appointment_time) BETWEEN ? AND ?",
+                [
+                    $window24Start->format('Y-m-d H:i:s'),
+                    $window24End->format('Y-m-d H:i:s'),
+                ]
+            )
             ->with(['user.pushSubscriptions', 'service', 'barber.user', 'shop'])
             ->get();
 
@@ -60,16 +64,20 @@ class SendAppointmentReminders extends Command
         }
 
         // ── 1-hour reminder ──────────────────────────────────────────────────
+        // Window: appointments happening between 45 and 75 minutes from now
         $window1hStart = $now->copy()->addMinutes(45);
         $window1hEnd   = $now->copy()->addMinutes(75);
 
+        // Use a raw datetime comparison to correctly handle midnight boundary crossovers
         $appointments1h = Appointment::where('reminder_1h_sent', false)
             ->whereIn('status', ['pending', 'confirmed'])
-            ->whereDate('appointment_date', $window1hStart->toDateString())
-            ->whereBetween('appointment_time', [
-                $window1hStart->format('H:i:s'),
-                $window1hEnd->format('H:i:s'),
-            ])
+            ->whereRaw(
+                "CONCAT(appointment_date, ' ', appointment_time) BETWEEN ? AND ?",
+                [
+                    $window1hStart->format('Y-m-d H:i:s'),
+                    $window1hEnd->format('Y-m-d H:i:s'),
+                ]
+            )
             ->with(['user.pushSubscriptions', 'service', 'barber.user', 'shop'])
             ->get();
 

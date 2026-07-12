@@ -137,10 +137,116 @@
           </button>
         </div>
 
+        <!-- Already reviewed -->
+        <div class="card-review-done" *ngIf="hasReview(a)">
+          <div class="review-stars-display">
+            <svg *ngFor="let s of [1,2,3,4,5]" viewBox="0 0 24 24"
+              [class.star-filled]="s <= a.review.rating" [class.star-empty]="s > a.review.rating">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <span class="review-done-label">{{ 'appointments.review.rated' | translate }}</span>
+          <p class="review-done-comment" *ngIf="a.review.comment">{{ a.review.comment }}</p>
+        </div>
+
+        <!-- Rate this appointment -->
+        <div class="card-action" *ngIf="canReview(a)">
+          <button class="rate-btn" (click)="openReviewModal(a)">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            {{ 'appointments.review.rateBtn' | translate }}
+          </button>
+        </div>
+
       </div>
     </div>
 
   </div>
 
   <app-bottom-nav [activeTab]="'appointments'"></app-bottom-nav>
+</div>
+
+<!-- ── Review Modal ─────────────────────────────────── -->
+<div class="modal-backdrop" *ngIf="reviewModalOpen" (click)="closeReviewModal()"></div>
+
+<div class="review-modal" *ngIf="reviewModalOpen" role="dialog" aria-modal="true">
+
+  <!-- Success state -->
+  <div class="review-success" *ngIf="reviewSuccess">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <p class="success-title">{{ 'appointments.review.successTitle' | translate }}</p>
+    <p class="success-sub">{{ 'appointments.review.successSub' | translate }}</p>
+  </div>
+
+  <!-- Form state -->
+  <ng-container *ngIf="!reviewSuccess">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <p class="modal-eyebrow">{{ 'appointments.review.eyebrow' | translate }}</p>
+        <h2 class="modal-title">{{ 'appointments.review.title' | translate }}</h2>
+      </div>
+      <button class="modal-close" (click)="closeReviewModal()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Appointment summary -->
+    <div class="modal-appt-summary" *ngIf="reviewAppointment">
+      <div class="summary-service">{{ getServiceName(reviewAppointment) }}</div>
+      <div class="summary-meta">{{ getBarberName(reviewAppointment) }} · {{ getShopName(reviewAppointment) }}</div>
+    </div>
+
+    <!-- Star picker -->
+    <div class="star-picker">
+      <button class="star-btn" *ngFor="let s of [1,2,3,4,5]"
+        (click)="setRating(s)"
+        (mouseenter)="setHover(s)"
+        (mouseleave)="clearHover()"
+        [class.active]="starActive(s)"
+        [attr.aria-label]="s + ' star'">
+        <svg viewBox="0 0 24 24">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="star-hint">
+      <ng-container [ngSwitch]="reviewHover || reviewRating">
+        <span *ngSwitchCase="1">😞 {{ 'appointments.review.star1' | translate }}</span>
+        <span *ngSwitchCase="2">😐 {{ 'appointments.review.star2' | translate }}</span>
+        <span *ngSwitchCase="3">🙂 {{ 'appointments.review.star3' | translate }}</span>
+        <span *ngSwitchCase="4">😊 {{ 'appointments.review.star4' | translate }}</span>
+        <span *ngSwitchCase="5">🤩 {{ 'appointments.review.star5' | translate }}</span>
+        <span *ngSwitchDefault>{{ 'appointments.review.starHint' | translate }}</span>
+      </ng-container>
+    </p>
+
+    <!-- Comment -->
+    <textarea class="review-textarea"
+      [(ngModel)]="reviewComment"
+      [placeholder]="'appointments.review.commentPlaceholder' | translate"
+      rows="3"
+      maxlength="500">
+    </textarea>
+    <p class="char-count">{{ reviewComment.length }} / 500</p>
+
+    <!-- Error -->
+    <p class="review-error" *ngIf="reviewError">{{ reviewError }}</p>
+
+    <!-- Submit -->
+    <button class="submit-review-btn"
+      (click)="submitReview()"
+      [disabled]="reviewSubmitting || reviewRating === 0">
+      <span *ngIf="!reviewSubmitting">{{ 'appointments.review.submit' | translate }}</span>
+      <span *ngIf="reviewSubmitting">{{ 'appointments.review.submitting' | translate }}</span>
+    </button>
+  </ng-container>
+
 </div>

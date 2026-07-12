@@ -16,7 +16,7 @@ export class ShopDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private shopService: ShopService,
+    public shopService: ShopService,
     public authService: AuthService
   ) {}
 

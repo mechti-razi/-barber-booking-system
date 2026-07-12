@@ -14,14 +14,6 @@
       <div class="nav-label">{{ item.labelKey | translate }}</div>
       <div class="nav-indicator" *ngIf="activeTab === item.id"></div>
     </div>
-    <!-- Theme toggle (keeps navbar compact) -->
-    <div class="nav-item theme-toggle" (click)="toggleTheme()" [title]="'common.theme' | translate">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" class="icon-svg" fill="currentColor">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </div>
-      <div class="nav-label">{{ 'common.theme' | translate }}</div>
-    </div>
+    
   </div>
 </div>

@@ -14,6 +14,7 @@
     inset 0 1px 2px rgba(255, 255, 255, 0.05);
   z-index: 1000;
   padding-bottom: env(safe-area-inset-bottom);
+  overflow: hidden;
   width: 92%;
   max-width: 360px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -41,17 +42,6 @@
   border-radius: 16px;
   border: 1px solid transparent;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.nav-item.theme-toggle .icon-svg {
-  width: 16px;
-  height: 16px;
-  fill: #f3f4f6;
-}
-
-.nav-item.theme-toggle .nav-label {
-  font-size: 9px;
-  color: #d1d5db;
 }
 
 .nav-item:hover {
@@ -111,7 +101,13 @@
   display: none;
 }
 
-/* Dark mode default — light mode overrides come via [data-theme="light"] in styles.css */
+/* Force dark-glass design in all preferences since the app is dark themed */
+@media (prefers-color-scheme: light), (prefers-color-scheme: dark) {
+  .bottom-nav {
+    background: rgba(10, 10, 15, 0.72);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
 
 /* Responsive adjustments */
 @media (min-width: 768px) {

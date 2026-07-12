@@ -5,6 +5,8 @@
 .page-wrap {
   padding: 32px;
   max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
   animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
@@ -942,106 +944,243 @@ input:checked + .slider:before {
 }
 
 /* ══ LIGHT MODE ══════════════════════════════════════════ */
+
+/* ── Page ── */
 :host-context([data-theme="light"]) .page-wrap { background: transparent; }
-:host-context([data-theme="light"]) .page-title { color: #1a1a2e; }
-:host-context([data-theme="light"]) .page-subtitle { color: #4a4a6a; }
 
-/* Day cards */
-:host-context([data-theme="light"]) .day-card,
-:host-context([data-theme="light"]) .schedule-day-card,
-:host-context([data-theme="light"]) .day-row {
+/* ── Page Header card ── */
+:host-context([data-theme="light"]) .page-header {
+  padding: 24px 28px;
   background: #ffffff;
-  border-color: rgba(0,0,0,0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
 }
-:host-context([data-theme="light"]) .day-card:hover,
-:host-context([data-theme="light"]) .schedule-day-card:hover {
-  border-color: rgba(184,134,11,0.2);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+:host-context([data-theme="light"]) .page-title    { color: #0f172a; }
+:host-context([data-theme="light"]) .page-subtitle { color: #64748b; }
+
+/* ── Save button disabled state ── */
+:host-context([data-theme="light"]) .save-btn:disabled {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
 }
-:host-context([data-theme="light"]) .day-name,
-:host-context([data-theme="light"]) .day-label { color: #1a1a2e; }
-:host-context([data-theme="light"]) .day-unavailable { color: #8a8aaa; }
 
-/* Time inputs */
-:host-context([data-theme="light"]) .time-input,
-:host-context([data-theme="light"]) .schedule-input {
-  background: #f8f8fb;
-  border-color: rgba(0,0,0,0.1);
-  color: #1a1a2e;
+/* ── Alert banners ── */
+:host-context([data-theme="light"]) .alert-success {
+  --alert-bg: #f0fdf4;
+  --alert-border: rgba(22,163,74,0.22);
+  --alert-text: #16a34a;
+  box-shadow: 0 2px 10px rgba(22,163,74,0.08);
 }
-:host-context([data-theme="light"]) .time-input:focus,
-:host-context([data-theme="light"]) .schedule-input:focus {
-  border-color: #b8860b;
-  background: rgba(184,134,11,0.03);
-  box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
+:host-context([data-theme="light"]) .alert-success .alert-icon-box {
+  background: rgba(22,163,74,0.1);
+  border-color: rgba(22,163,74,0.2);
+  color: #16a34a;
 }
-:host-context([data-theme="light"]) .time-label,
-:host-context([data-theme="light"]) .input-label { color: #4a4a6a; }
-
-/* Toggle */
-:host-context([data-theme="light"]) .toggle-label { color: #4a4a6a; }
-:host-context([data-theme="light"]) .slider { background: rgba(0,0,0,0.12); border-color: rgba(0,0,0,0.06); }
-:host-context([data-theme="light"]) .slider::before { background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
-
-/* Break section */
-:host-context([data-theme="light"]) .break-section,
-:host-context([data-theme="light"]) .break-row { border-top-color: rgba(0,0,0,0.06); }
-:host-context([data-theme="light"]) .break-label { color: #4a4a6a; }
-
-/* Status indicators */
-:host-context([data-theme="light"]) .status-indicator { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.07); }
-:host-context([data-theme="light"]) .indicator-dot.available { background: #10b981; }
-
-/* Error banner */
-:host-context([data-theme="light"]) .error-banner {
-  background: rgba(239,68,68,0.07);
-  border-color: rgba(239,68,68,0.18);
+:host-context([data-theme="light"]) .alert-error {
+  --alert-bg: #fef2f2;
+  --alert-border: rgba(220,38,38,0.22);
+  --alert-text: #dc2626;
+  box-shadow: 0 2px 10px rgba(220,38,38,0.08);
+}
+:host-context([data-theme="light"]) .alert-error .alert-icon-box {
+  background: rgba(220,38,38,0.1);
+  border-color: rgba(220,38,38,0.2);
   color: #dc2626;
 }
 
-/* Empty state */
-:host-context([data-theme="light"]) .empty-state { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.07); }
+/* ── Left panel: Days list card ── */
+:host-context([data-theme="light"]) .days-list-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+:host-context([data-theme="light"]) .card-title  { color: #64748b; }
+:host-context([data-theme="light"]) .days-count  { color: #94a3b8; }
 
-/* ── Time input wrapper — actual selector ── */
+/* Day buttons */
+:host-context([data-theme="light"]) .day-btn {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+:host-context([data-theme="light"]) .day-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+:host-context([data-theme="light"]) .day-btn.active {
+  background: rgba(217,119,6,0.06);
+  border-color: #d97706;
+  box-shadow: 0 2px 10px rgba(217,119,6,0.12);
+}
+:host-context([data-theme="light"]) .day-btn-fullname { color: #0f172a; }
+:host-context([data-theme="light"]) .day-btn-name     { color: #0f172a; }
+:host-context([data-theme="light"]) .day-btn.active .day-btn-fullname,
+:host-context([data-theme="light"]) .day-btn.active .day-btn-name { color: #d97706; }
+:host-context([data-theme="light"]) .day-btn-hours        { color: #64748b; }
+:host-context([data-theme="light"]) .day-btn-hours.closed { color: #94a3b8; }
+
+/* Indicator dot */
+:host-context([data-theme="light"]) .indicator-dot {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+:host-context([data-theme="light"]) .indicator-dot.available {
+  background: #10b981;
+  border-color: rgba(16,185,129,0.3);
+  box-shadow: 0 0 8px rgba(16,185,129,0.35);
+}
+
+/* ── Right panel: Day details card ── */
+:host-context([data-theme="light"]) .day-details-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+}
+:host-context([data-theme="light"]) .details-header {
+  border-bottom-color: #f1f5f9;
+}
+:host-context([data-theme="light"]) .details-header h2 { color: #0f172a; }
+
+/* Status badge */
+:host-context([data-theme="light"]) .badge {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: rgba(220,38,38,0.2);
+}
+:host-context([data-theme="light"]) .badge-active {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: rgba(22,163,74,0.2);
+}
+
+/* Copy-all button */
+:host-context([data-theme="light"]) .copy-all-btn {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+:host-context([data-theme="light"]) .copy-all-btn:hover {
+  background: rgba(217,119,6,0.06);
+  border-color: #d97706;
+  color: #92650a;
+}
+
+/* Status toggle wrap */
+:host-context([data-theme="light"]) .status-toggle-wrap {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+:host-context([data-theme="light"]) .toggle-label { color: #475569; }
+:host-context([data-theme="light"]) .slider {
+  background: #cbd5e1;
+  border-color: #e2e8f0;
+}
+:host-context([data-theme="light"]) .slider::before {
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+:host-context([data-theme="light"]) input:checked + .slider {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16,185,129,0.2);
+}
+
+/* ── Settings sections ── */
+:host-context([data-theme="light"]) .settings-section {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+:host-context([data-theme="light"]) .settings-section:hover {
+  background: #f1f5f9;
+}
+:host-context([data-theme="light"]) .settings-section h3 { color: #0f172a; }
+:host-context([data-theme="light"]) .section-description  { color: #64748b; }
+
+/* Section icon boxes */
+:host-context([data-theme="light"]) .section-icon-box {
+  background: rgba(217,119,6,0.08);
+  border-color: rgba(217,119,6,0.18);
+  color: #d97706;
+}
+:host-context([data-theme="light"]) .section-icon-box.break-icon-box {
+  background: rgba(251,191,36,0.08);
+  border-color: rgba(251,191,36,0.2);
+  color: #d97706;
+}
+:host-context([data-theme="light"]) .section-icon-box.preview-icon-box {
+  background: rgba(56,189,248,0.08);
+  border-color: rgba(56,189,248,0.2);
+  color: #0284c7;
+}
+
+/* ── Time pickers ── */
+:host-context([data-theme="light"]) .time-picker-item label { color: #475569; }
 :host-context([data-theme="light"]) .time-input-wrapper input[type="time"] {
-  background: #f8f8fb;
-  border-color: rgba(0,0,0,0.1);
-  color: #1a1a2e;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
 }
 :host-context([data-theme="light"]) .time-input-wrapper input[type="time"]:focus {
-  border-color: #b8860b;
-  background: rgba(184,134,11,0.03);
-  box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
+  border-color: #d97706;
+  background: #fffdf5;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.12);
 }
-/* Fix the clock icon — dark mode uses invert filter, light mode needs different filter */
 :host-context([data-theme="light"]) .time-input-wrapper input[type="time"]::-webkit-calendar-picker-indicator {
   filter: none;
-  opacity: 0.5;
+  opacity: 0.45;
 }
 :host-context([data-theme="light"]) .time-input-wrapper input[type="time"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.8;
 }
 
-/* Label text above time inputs */
-:host-context([data-theme="light"]) .input-label,
-:host-context([data-theme="light"]) .time-label,
-:host-context([data-theme="light"]) .shift-label,
-:host-context([data-theme="light"]) .break-label { color: #4a4a6a; }
-
-/* Day card in schedule */
-:host-context([data-theme="light"]) .day-card,
-:host-context([data-theme="light"]) .schedule-card {
+/* ── Slot preview pills ── */
+:host-context([data-theme="light"]) .slot-pill {
   background: #ffffff;
-  border-color: rgba(0,0,0,0.08);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-color: #e2e8f0;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-:host-context([data-theme="light"]) .day-title,
-:host-context([data-theme="light"]) .day-name-label { color: #1a1a2e; }
+:host-context([data-theme="light"]) .slot-pill:hover {
+  background: rgba(217,119,6,0.06);
+  border-color: #d97706;
+  color: #92650a;
+}
+:host-context([data-theme="light"]) .slot-dot {
+  background: #d97706;
+  box-shadow: 0 0 5px rgba(217,119,6,0.3);
+}
 
-/* Rest break info row */
-:host-context([data-theme="light"]) .break-info-icon-wrap {
-  background: rgba(184,134,11,0.08);
-  border-color: rgba(184,134,11,0.15);
+/* Empty / invalid slots warning */
+:host-context([data-theme="light"]) .empty-slots {
+  background: #fef2f2;
+  border-color: rgba(220,38,38,0.2);
+  color: #dc2626;
 }
-:host-context([data-theme="light"]) .break-info-title { color: #1a1a2e; }
-:host-context([data-theme="light"]) .break-info-desc  { color: #4a4a6a; }
+
+/* Closed day banner */
+:host-context([data-theme="light"]) .closed-banner {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+:host-context([data-theme="light"]) .closed-icon-box {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+
+/* ── Inline save (mobile) ── */
+:host-context([data-theme="light"]) .card-inline-save {
+  border-top-color: #f1f5f9;
+}
+
+/* ── Page loader ── */
+:host-context([data-theme="light"]) .page-loader { color: #64748b; }
+:host-context([data-theme="light"]) .spin-gold {
+  border-color: rgba(0,0,0,0.08);
+  border-top-color: #d97706;
+}
+

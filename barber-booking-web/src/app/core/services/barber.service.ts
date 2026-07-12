@@ -15,7 +15,7 @@ export class BarberService {
   // schedule: { workDays: 0=Sun…6=Sat[], startHour: 9, endHour: 18, slotMinutes: 30 }
   private defaultBarbers = [
     {
-      id: 1, user_id: 1, name: 'Marco Velo', email: 'marco@barberbook.com',
+      id: 1, user_id: 1, name: 'Marco Velo', email: 'marco@coupena.com',
       phone: '+1 555-0192', specialization: 'Haircut & Styling', experience: '8 years',
       rating: 4.9, active: true, shop_id: 1,
       subscription_type: 'monthly',
@@ -24,7 +24,7 @@ export class BarberService {
       created_at: new Date(2025, 4, 12).toISOString()
     },
     {
-      id: 2, user_id: 2, name: 'Sven Larson', email: 'sven@barberbook.com',
+      id: 2, user_id: 2, name: 'Sven Larson', email: 'sven@coupena.com',
       phone: '+1 555-0144', specialization: 'Beard Grooming', experience: '5 years',
       rating: 4.7, active: true, shop_id: 1,
       subscription_type: 'yearly',
@@ -33,7 +33,7 @@ export class BarberService {
       created_at: new Date(2025, 6, 22).toISOString()
     },
     {
-      id: 3, user_id: 3, name: 'Jean-Luc Dubois', email: 'jean@barberbook.com',
+      id: 3, user_id: 3, name: 'Jean-Luc Dubois', email: 'jean@coupena.com',
       phone: '+1 555-0211', specialization: 'Shave & Facial', experience: '12 years',
       rating: 5.0, active: false, shop_id: 1,
       subscription_type: 'quarterly',

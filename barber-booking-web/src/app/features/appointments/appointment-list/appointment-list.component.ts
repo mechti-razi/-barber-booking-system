@@ -16,6 +16,16 @@ export class AppointmentListComponent implements OnInit {
   activeTab: 'upcoming' | 'past' | 'all' = 'upcoming';
   cancellingId: number | null = null;
 
+  // ── Review modal state ──────────────────────────────────
+  reviewModalOpen = false;
+  reviewAppointment: any = null;
+  reviewRating = 0;
+  reviewHover = 0;
+  reviewComment = '';
+  reviewSubmitting = false;
+  reviewError = '';
+  reviewSuccess = false;
+
   constructor(
     private appointmentService: AppointmentService,
     private authService: AuthService,
@@ -138,7 +148,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   canCancel(a: any): boolean {
-    return a.status === 'pending' || a.status === 'confirmed';
+    return a.status === 'pending';
   }
 
   cancelAppointment(id: number): void {
@@ -180,7 +190,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   getShopName(a: any): string {
-    return a.shop?.name || 'BarberBook Shop';
+    return a.shop?.name || 'Coupena Shop';
   }
 
   getPrice(a: any): string | number {
@@ -212,5 +222,75 @@ export class AppointmentListComponent implements OnInit {
     const tom = new Date();
     tom.setDate(tom.getDate() + 1);
     return dateStr === tom.toISOString().split('T')[0];
+  }
+
+  // ── Review helpers ────────────────────────────────────────
+
+  canReview(a: any): boolean {
+    return a.status === 'completed' && !a.review;
+  }
+
+  hasReview(a: any): boolean {
+    return !!a.review;
+  }
+
+  openReviewModal(a: any): void {
+    this.reviewAppointment = a;
+    this.reviewRating = 0;
+    this.reviewHover = 0;
+    this.reviewComment = '';
+    this.reviewError = '';
+    this.reviewSuccess = false;
+    this.reviewSubmitting = false;
+    this.reviewModalOpen = true;
+  }
+
+  closeReviewModal(): void {
+    this.reviewModalOpen = false;
+    this.reviewAppointment = null;
+  }
+
+  setRating(star: number): void {
+    this.reviewRating = star;
+  }
+
+  setHover(star: number): void {
+    this.reviewHover = star;
+  }
+
+  clearHover(): void {
+    this.reviewHover = 0;
+  }
+
+  starActive(star: number): boolean {
+    return star <= (this.reviewHover || this.reviewRating);
+  }
+
+  submitReview(): void {
+    if (this.reviewRating === 0) {
+      this.reviewError = this.translateService.t('appointments.review.errorNoRating');
+      return;
+    }
+    this.reviewSubmitting = true;
+    this.reviewError = '';
+
+    this.appointmentService.submitReview({
+      appointment_id: this.reviewAppointment.id,
+      rating: this.reviewRating,
+      comment: this.reviewComment.trim(),
+    }).subscribe({
+      next: (review) => {
+        this.reviewSubmitting = false;
+        this.reviewSuccess = true;
+        // Patch the appointment in-memory so the card updates instantly
+        const appt = this.allAppointments.find(a => a.id === this.reviewAppointment.id);
+        if (appt) { appt.review = review; }
+        setTimeout(() => this.closeReviewModal(), 1400);
+      },
+      error: (err) => {
+        this.reviewSubmitting = false;
+        this.reviewError = err?.error?.error || err?.error?.message || this.translateService.t('appointments.review.errorFailed');
+      }
+    });
   }
 }

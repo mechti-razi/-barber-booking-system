@@ -5,44 +5,37 @@
     <section class="auth-visual-panel">
       <div class="brand-logo">
         <div class="logo-icon-wrap">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm4-4L36 28M36 28l16-16"/>
-            <path d="M48 48c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm-4-4L28 28M28 28L12 12"/>
-            <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
-          </svg>
+          <img src="assets/images/coupena-logo.png" alt="Coupena Logo" class="brand-logo-img">
         </div>
         <div>
-          <p class="brand-kicker">Create your profile</p>
-          <h1>Barber<span class="accent">Book</span></h1>
+          <p class="brand-kicker">{{ 'auth.register.brandKicker' | translate }}</p>
+          <h1>Coupe<span class="accent">na</span></h1>
         </div>
       </div>
 
-      <p class="hero-copy">
-        Set up your account once — book faster, save your details, and track every visit from one place.
-      </p>
+      <p class="hero-copy">{{ 'auth.register.heroCopy' | translate }}</p>
 
       <div class="stats-row">
         <div class="stat">
-          <span class="stat-num">500+</span>
-          <span class="stat-label">Barbers</span>
+          <span class="stat-num">{{ 'auth.register.stats.barbers500' | translate }}</span>
+          <span class="stat-label">{{ 'auth.register.stats.barbersLabel' | translate }}</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <span class="stat-num">Free</span>
-          <span class="stat-label">Always</span>
+          <span class="stat-num">{{ 'auth.register.stats.freeNum' | translate }}</span>
+          <span class="stat-label">{{ 'auth.register.stats.freeLabel' | translate }}</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
-          <span class="stat-num">30s</span>
-          <span class="stat-label">To sign up</span>
+          <span class="stat-num">{{ 'auth.register.stats.signupNum' | translate }}</span>
+          <span class="stat-label">{{ 'auth.register.stats.signupTime' | translate }}</span>
         </div>
       </div>
 
       <div class="info-strip">
-        <span>✨ Quick setup</span>
-        <span>💾 Saved details</span>
-        <span>📅 Smart booking</span>
+        <span>{{ 'auth.register.badges.quickSetup' | translate }}</span>
+        <span>{{ 'auth.register.badges.savedDetails' | translate }}</span>
+        <span>{{ 'auth.register.badges.smartBooking' | translate }}</span>
       </div>
     </section>
 
@@ -92,7 +85,7 @@
               <label for="email">{{ 'auth.register.email' | translate }}</label>
               <div class="input-wrapper">
                 <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-                <input type="email" id="email" formControlName="email" placeholder="name@example.com" autocomplete="email"/>
+                <input type="email" id="email" formControlName="email" [placeholder]="'auth.login.emailPlaceholder' | translate" autocomplete="email"/>
               </div>
               <span *ngIf="f['email'].invalid && f['email'].touched" class="error-message">{{ 'auth.register.errors.emailRequired' | translate }}</span>
             </div>
@@ -134,7 +127,7 @@
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 11 2 2 4-4"/>
                   </svg>
                 </span>
-                <input [type]="showConfirm ? 'text' : 'password'" id="password_confirmation" formControlName="password_confirmation" placeholder="Repeat password" autocomplete="new-password"/>
+                <input [type]="showConfirm ? 'text' : 'password'" id="password_confirmation" formControlName="password_confirmation" [placeholder]="'auth.register.confirmPlaceholder' | translate" autocomplete="new-password"/>
                 <button type="button" class="toggle-password" (click)="showConfirm = !showConfirm" aria-label="Toggle confirm password">
                   <svg *ngIf="!showConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>

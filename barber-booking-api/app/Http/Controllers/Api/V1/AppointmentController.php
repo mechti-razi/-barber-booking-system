@@ -14,7 +14,7 @@ class AppointmentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Appointment::with(['user', 'shop', 'barber', 'service']);
+        $query = Appointment::with(['user', 'shop', 'barber', 'service', 'review']);
         
         // Filter by user role/permissions
         if ($request->user()) {
@@ -106,14 +106,39 @@ class AppointmentController extends Controller
 
     /**
      * Update the specified appointment.
+     * Clients may only cancel their own pending appointments.
+     * Barbers and admins retain full status control.
      */
     public function update(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);
+        $user        = $request->user();
+
+        // ── Client-specific rules ─────────────────────────────────────────
+        if ($user && $user->role === 'client') {
+            // Clients may only update their own appointments
+            if ($appointment->user_id !== $user->id) {
+                return response()->json(['error' => 'Access denied.'], 403);
+            }
+
+            // Clients may only request a cancellation
+            if ($request->has('status') && $request->status !== 'cancelled') {
+                return response()->json(['error' => 'You can only cancel your own appointments.'], 403);
+            }
+
+            // Cancellation is only allowed when the appointment is still pending
+            if ($request->has('status') && $request->status === 'cancelled') {
+                if ($appointment->status !== 'pending') {
+                    return response()->json([
+                        'error' => 'This appointment can no longer be cancelled because it has already been ' . $appointment->status . '.',
+                    ], 422);
+                }
+            }
+        }
 
         $validator = Validator::make($request->all(), [
-            'status' => 'sometimes|required|in:pending,confirmed,completed,cancelled,no_show',
-            'notes' => 'nullable|string',
+            'status'              => 'sometimes|required|in:pending,confirmed,completed,cancelled,no_show',
+            'notes'               => 'nullable|string',
             'cancellation_reason' => 'nullable|string',
         ]);
 

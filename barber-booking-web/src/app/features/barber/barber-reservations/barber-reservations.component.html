@@ -189,7 +189,7 @@
                   <button class="action-btn-circle success-action"
                     *ngIf="appt.status === 'pending'"
                     (click)="requestAction(appt, 'confirm', $event)"
-                    title="Confirm Reservation"
+                    [title]="'barber.reservations.drawer.confirmFinalize' | translate"
                     aria-label="Confirm reservation"
                     [id]="'btn-confirm-' + appt.id">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -199,7 +199,7 @@
                   <button class="action-btn-circle primary-action"
                     *ngIf="appt.status === 'confirmed'"
                     (click)="requestAction(appt, 'complete', $event)"
-                    title="Mark Completed"
+                    [title]="'barber.reservations.drawer.markCompleted' | translate"
                     aria-label="Complete reservation"
                     [id]="'btn-complete-' + appt.id">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -209,7 +209,7 @@
                   <button class="action-btn-circle danger-action"
                     *ngIf="appt.status !== 'cancelled' && appt.status !== 'completed'"
                     (click)="requestAction(appt, 'cancel', $event)"
-                    title="Cancel Reservation"
+                    [title]="'barber.reservations.drawer.cancelReservation' | translate"
                     aria-label="Cancel reservation"
                     [id]="'btn-cancel-' + appt.id">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -268,9 +268,9 @@
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            Working hours: {{ formatTime(sched.start_time) }} – {{ formatTime(sched.end_time) }}
+            {{ 'barber.reservations.calendar.workingHours' | translate }}: {{ formatTime(sched.start_time) }} – {{ formatTime(sched.end_time) }}
             <span *ngIf="sched.break_start_time && sched.break_end_time" class="break-hint">
-              · Break {{ formatTime(sched.break_start_time) }}–{{ formatTime(sched.break_end_time) }}
+              · {{ 'barber.reservations.calendar.break' | translate }} {{ formatTime(sched.break_start_time) }}–{{ formatTime(sched.break_end_time) }}
             </span>
           </div>
           <div class="legend-items">
@@ -332,7 +332,7 @@
                   <span class="client-name">{{ slot.appointment.user?.name }}</span>
                   <span class="status-pill inline badge-pending">
                     <span class="pulse-dot"></span>
-                    Pending
+                    {{ 'barber.reservations.status.pending' | translate }}
                   </span>
                 </div>
                 <div class="booked-details">
@@ -437,10 +437,6 @@
       <div class="hero-profile-section">
         <div class="hero-bg-glow"></div>
         <div class="hero-pattern-overlay"></div>
-        <div class="hero-avatar-ring">
-          <div class="hero-avatar">{{ selected.user?.name?.[0]?.toUpperCase() || '?' }}</div>
-          <div class="hero-status-ring" [ngClass]="statusClass(selected.status)"></div>
-        </div>
         <div class="hero-info">
           <h3 class="hero-client-name">{{ selected.user?.name }}</h3>
           <div class="hero-badges-row">
@@ -463,6 +459,7 @@
           </div>
         </div>
       </div>
+
 
       <!-- ══ QUICK CONTACT BAR ═══════════════════════════════ -->
       <div class="quick-contact-bar">
@@ -527,7 +524,7 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              <span class="card-label">Date & Time</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.dateTime' | translate }}</span>
             </div>
             <div class="card-time-display">
               <span class="card-time-large">{{ formatTime(selected.appointment_time) }}</span>
@@ -549,7 +546,7 @@
                 <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
                 <line x1="9.8" y1="15.8" x2="20" y2="5.6"></line>
               </svg>
-              <span class="card-label">Service</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.service' | translate }}</span>
             </div>
             <span class="card-service-name">{{ selected.service?.name }}</span>
             <div class="card-service-meta">
@@ -574,24 +571,24 @@
                 <line x1="12" y1="1" x2="12" y2="23"></line>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
               </svg>
-              <span class="card-label">Pricing Summary</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.pricing' | translate }}</span>
             </div>
             <div class="pricing-rows">
               <div class="pricing-row">
-                <span class="pricing-label">Service Base Price</span>
+                <span class="pricing-label">{{ 'barber.reservations.drawer.basePrice' | translate }}</span>
                 <span class="pricing-value">{{ selected.service?.base_price || selected.service?.price || '—' }} DT</span>
               </div>
               <div class="pricing-row" *ngIf="selected.discount && selected.discount !== '0.00'">
-                <span class="pricing-label">Discount</span>
+                <span class="pricing-label">{{ 'barber.reservations.drawer.discount' | translate }}</span>
                 <span class="pricing-value discount-value">-{{ selected.discount }} DT</span>
               </div>
               <div class="pricing-row" *ngIf="selected.deposit && selected.deposit !== '0.00'">
-                <span class="pricing-label">Deposit Paid</span>
+                <span class="pricing-label">{{ 'barber.reservations.drawer.deposit' | translate }}</span>
                 <span class="pricing-value deposit-value">{{ selected.deposit }} DT</span>
               </div>
               <div class="pricing-divider"></div>
               <div class="pricing-row total-row">
-                <span class="pricing-label total-label">Total Due</span>
+                <span class="pricing-label total-label">{{ 'barber.reservations.drawer.totalDue' | translate }}</span>
                 <span class="pricing-value total-value">
                   {{ (selected.total_price && selected.total_price !== '0.00' && selected.total_price !== '0')
                     ? selected.total_price
@@ -611,7 +608,7 @@
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <span class="card-label">Location</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.location' | translate }}</span>
             </div>
             <span class="card-location-name">{{ selected.shop?.name }}</span>
           </div>
@@ -626,7 +623,7 @@
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              <span class="card-label">Assigned Barber</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.assignedBarber' | translate }}</span>
             </div>
             <span class="card-staff-name">{{ selected.barber?.name || selected.staff?.name }}</span>
           </div>
@@ -640,27 +637,27 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="card-header-icon">
                 <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
               </svg>
-              <span class="card-label">Booking Info</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.bookingInfo' | translate }}</span>
             </div>
             <div class="booking-meta-rows">
               <div class="booking-meta-row">
-                <span class="meta-key">Reference ID</span>
+                <span class="meta-key">{{ 'barber.reservations.drawer.referenceId' | translate }}</span>
                 <span class="meta-val">#{{ selected.id }}</span>
               </div>
               <div class="booking-meta-row">
-                <span class="meta-key">Appointment Status</span>
+                <span class="meta-key">{{ 'barber.reservations.drawer.status' | translate }}</span>
                 <span class="meta-val status-val" [ngClass]="statusClass(selected.status)">{{ statusLabel(selected.status) }}</span>
               </div>
               <div class="booking-meta-row" *ngIf="selected.created_at">
-                <span class="meta-key">Booked On</span>
+                <span class="meta-key">{{ 'barber.reservations.drawer.bookedOn' | translate }}</span>
                 <span class="meta-val">{{ formatDateStr(selected.created_at) }}</span>
               </div>
               <div class="booking-meta-row" *ngIf="selected.updated_at">
-                <span class="meta-key">Last Updated</span>
+                <span class="meta-key">{{ 'barber.reservations.drawer.lastUpdated' | translate }}</span>
                 <span class="meta-val">{{ formatDateStr(selected.updated_at) }}</span>
               </div>
               <div class="booking-meta-row" *ngIf="selected.cancellation_reason">
-                <span class="meta-key">Cancellation Reason</span>
+                <span class="meta-key">{{ 'barber.reservations.drawer.cancellationReason' | translate }}</span>
                 <span class="meta-val cancel-reason">{{ selected.cancellation_reason }}</span>
               </div>
             </div>
@@ -678,7 +675,7 @@
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
               </svg>
-              <span class="card-label">Client Notes</span>
+              <span class="card-label">{{ 'barber.reservations.drawer.clientNotes' | translate }}</span>
             </div>
             <div class="notes-content">
               <p class="notes-text" *ngIf="selected.notes">{{ selected.notes }}</p>
@@ -687,7 +684,7 @@
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
-                <span>No custom notes provided for this booking.</span>
+                <span>{{ 'barber.reservations.drawer.noNotes' | translate }}</span>
               </div>
             </div>
           </div>
@@ -774,6 +771,6 @@
       <div class="loader-ring"></div>
       <div class="loader-ring"></div>
     </div>
-    <p class="loader-text">Loading Reservations Workspace…</p>
+    <p class="loader-text">{{ 'barber.reservations.loading' | translate }}</p>
   </div>
 </ng-template>

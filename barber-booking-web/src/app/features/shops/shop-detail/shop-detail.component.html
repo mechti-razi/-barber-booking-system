@@ -19,9 +19,9 @@
       </button>
 
       <!-- Status Pill -->
-      <span class="hero-status" [class.open]="shop.status === 'active'">
+      <span class="hero-status" [class.open]="shopService.isShopOpen(shop)">
         <span class="status-dot"></span>
-        {{ shop.status === 'active' ? ('shopDetail.open' | translate) : ('shopDetail.closed' | translate) }}
+        {{ shopService.isShopOpen(shop) ? ('shopDetail.open' | translate) : ('shopDetail.closed' | translate) }}
       </span>
 
       <!-- Hero Info -->

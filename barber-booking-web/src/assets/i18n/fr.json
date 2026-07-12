@@ -81,7 +81,7 @@
     "register": {
       "kicker": "Nouveau compte",
       "title": "Créer un compte",
-      "subtitle": "Rejoignez BarberBook — c'est gratuit.",
+      "subtitle": "Rejoignez Coupena — c'est gratuit.",
       "brandKicker": "Créez votre profil",
       "heroCopy": "Configurez votre compte une fois — réservez plus vite, sauvegardez vos données et suivez chaque visite depuis un seul endroit.",
       "fullName": "Nom complet",
@@ -108,9 +108,11 @@
         "passwordMismatch": "Les mots de passe ne correspondent pas"
       },
       "stats": {
-        "barbers": "Barbiers",
-        "always": "Toujours",
-        "free": "Gratuit",
+        "barbers500": "500+",
+        "barbersLabel": "Barbiers",
+        "freeNum": "Gratuit",
+        "freeLabel": "Toujours",
+        "signupNum": "30s",
         "signupTime": "Pour s'inscrire"
       },
       "badges": {
@@ -144,6 +146,12 @@
     "ctaTitle": "Prêt pour votre meilleure coupe ?",
     "ctaSub": "Rejoignez des milliers de clients qui réservent plus intelligemment chaque jour.",
     "noShops": "Aucun salon disponible pour l'instant.",
+    "contactTitle": "Contactez-nous",
+    "contactSub": "Une question ou besoin d'aide ? Nous sommes là pour vous.",
+    "contactEmail": "mechtirazi@gmail.com",
+    "contactPhone": "+216 24 060 251",
+    "contactEmailLabel": "Écrivez-nous",
+    "contactCallLabel": "Appelez-nous",
     "steps": {
       "1": { "title": "Parcourir les salons", "desc": "Trouvez les meilleurs barbiers près de vous" },
       "2": { "title": "Choisir un service", "desc": "Coupes, dégradés, tailles et plus" },
@@ -217,6 +225,25 @@
     "dateLabels": {
       "today": "Aujourd'hui",
       "tomorrow": "Demain"
+    },
+    "review": {
+      "rateBtn": "Évaluer cette visite",
+      "rated": "Vous avez évalué cette visite",
+      "eyebrow": "Votre avis",
+      "title": "Comment était votre visite ?",
+      "starHint": "Appuyez sur une étoile pour noter",
+      "star1": "Pas terrible",
+      "star2": "Peut mieux faire",
+      "star3": "C'était correct",
+      "star4": "Vraiment bien",
+      "star5": "Absolument parfait !",
+      "commentPlaceholder": "Dites-nous en plus sur votre expérience (facultatif)…",
+      "submit": "Soumettre l'avis",
+      "submitting": "Envoi en cours…",
+      "successTitle": "Avis soumis !",
+      "successSub": "Merci — votre avis aide toute la communauté.",
+      "errorNoRating": "Veuillez sélectionner une note avant de soumettre.",
+      "errorFailed": "Échec de l'envoi de votre avis. Veuillez réessayer."
     }
   },
 
@@ -304,8 +331,51 @@
       "spent": "Dz dépensés"
     },
     "since": "Depuis",
-    "version": "BarberBook · v2.0",
-    "loading": "Chargement…"
+    "version": "Coupena · v2.0",
+    "loading": "Chargement…",
+    "faq": {
+      "title": "Aide & FAQ",
+      "subtitle": "Questions fréquentes",
+      "q1": "Comment réserver un rendez-vous ?",
+      "a1": "Accédez à Salons depuis la navigation, choisissez un salon de coiffure, sélectionnez un barbier et un service, choisissez votre date et créneau horaire, puis confirmez votre réservation. Vous recevrez une confirmation instantanément.",
+      "q2": "Puis-je annuler mon rendez-vous ?",
+      "a2": "Oui. Ouvrez Mes rendez-vous depuis le menu profil, trouvez votre réservation et appuyez sur Annuler. Les annulations sont gratuites si effectuées au moins 1 heure avant le rendez-vous.",
+      "q3": "Comment activer les rappels de rendez-vous ?",
+      "a3": "Accédez à votre Profil et trouvez « Rappels de rendez-vous » dans la section Assistance. Appuyez sur le bouton pour activer les notifications push. Vous serez rappelé 24 heures et 1 heure avant chaque rendez-vous.",
+      "q4": "Mes données personnelles sont-elles sécurisées ?",
+      "a4": "Oui. Toutes les données sont transmises via HTTPS et stockées de manière sécurisée. Nous ne vendons jamais vos informations personnelles à des tiers. Consultez notre Politique de confidentialité pour plus de détails.",
+      "q5": "Comment contacter le support ?",
+      "a5": "Pour tout problème non couvert ici, contactez-nous à mechtirazi@gmail.com ou appelez le +216 24 060 251. Nous répondons généralement dans les 24 heures."
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "subtitle": "Comment nous traitons vos données",
+      "s1title": "Données collectées",
+      "s1body": "Nous collectons votre nom, adresse e-mail, numéro de téléphone et historique des réservations pour fournir le service. Nous pouvons également collecter des informations sur l'appareil et des données d'utilisation pour améliorer l'application.",
+      "s2title": "Utilisation des données",
+      "s2body": "Vos données sont utilisées pour gérer vos réservations, envoyer des rappels de rendez-vous et améliorer la plateforme. Nous n'utilisons pas vos données à des fins publicitaires.",
+      "s3title": "Partage des données",
+      "s3body": "Nous ne vendons pas vos données personnelles. Nous partageons uniquement les informations minimales nécessaires avec le salon que vous réservez (nom, téléphone, détails du rendez-vous). Nous pouvons utiliser des prestataires de confiance pour exploiter la plateforme sous des accords stricts.",
+      "s4title": "Vos droits",
+      "s4body": "Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles à tout moment. Vous pouvez également demander une copie de vos données ou retirer votre consentement. Contactez-nous à mechtirazi@gmail.com ou appelez le +216 24 060 251 pour exercer vos droits.",
+      "s5title": "Conservation des données",
+      "s5body": "Nous conservons vos données de compte tant que votre compte est actif. L'historique des réservations est conservé 12 mois après la date du rendez-vous. Vous pouvez demander la suppression à tout moment."
+    },
+    "pushNotifications": {
+      "title": "Rappels de rendez-vous",
+      "blockedDesc": "Bloqué dans les paramètres du navigateur — réactivez-le dans votre navigateur",
+      "enabledDesc": "Notifications activées — vous serez rappelé 24h et 1h avant",
+      "disabledDesc": "Recevez des rappels même quand l'application est fermée"
+    }
+  },
+
+  "admin": {
+    "nav": {
+      "overview": "Vue d'ensemble & Analyses",
+      "manageBarbers": "Gérer les coiffeurs",
+      "subscriptions": "Paramètres d'abonnement",
+      "manageServices": "Gérer les services"
+    }
   },
 
   "barber": {
@@ -319,7 +389,9 @@
       "loading": "Chargement de votre espace…",
       "signOut": "Déconnexion",
       "proPanelTag": "Espace Pro",
-      "version": "v2.0 · Barber Pro"
+      "version": "v2.0 · Coupena Pro",
+      "lightMode": "Mode clair",
+      "darkMode": "Mode sombre"
     },
     "mobileNav": {
       "dashboard": "Tableau",
@@ -327,11 +399,13 @@
       "services": "Services",
       "schedule": "Planning",
       "staff": "Équipe",
+      "shopStats": "Statistiques",
       "profile": "Profil"
     },
     "reservations": {
       "eyebrow": "Espace Barbier",
       "title": "Réservations",
+      "loading": "Chargement de l'espace réservations…",
       "subtitle": "Suivez, confirmez et gérez les réservations clients en temps réel",
       "newReservation": "Nouvelle réservation",
       "searchPlaceholder": "Rechercher client, service, date…",
@@ -406,6 +480,12 @@
       "calendar": {
         "workingHours": "Heures de travail",
         "break": "Pause",
+        "weekdays": {
+          "su": "Di", "mo": "Lu", "tu": "Ma", "we": "Me",
+          "th": "Je", "fr": "Ve", "sa": "Sa"
+        },
+        "workingHoursLabel": "Heures de travail : {{start}} – {{end}}",
+        "breakHint": "· Pause {{start}}–{{end}}",
         "legend": {
           "available": "Disponible",
           "pending": "En attente",
@@ -468,12 +548,19 @@
       "deactivate": "Désactiver",
       "performanceCalendar": "Performance & Calendrier",
       "noBio": "Aucune biographie fournie.",
+      "generalBarber": "Coiffeur général",
+      "stylist": "Styliste",
+      "yearsExp": "an",
+      "yearsExpPlural": "ans",
       "hireModal": {
         "title": "Recruter un employé",
         "subtitle": "Renseignez les détails ci-dessous",
         "name": "Nom",
         "email": "E-mail",
         "phone": "Téléphone",
+        "namePlaceholder": "ex. Jean Dupont",
+        "emailPlaceholder": "jean@exemple.com",
+        "phonePlaceholder": "+216 XX XXX XXX",
         "password": "Mot de passe",
         "passwordPlaceholder": "Min 8 caractères",
         "specialization": "Spécialisation",
@@ -585,6 +672,37 @@
       "revenueBreakdown": "Répartition des revenus",
       "ofTotal": "du total",
       "loading": "Chargement…"
+    },
+    "shopStats": {
+      "eyebrow": "Vue Globale du Salon",
+      "title": "Statistiques du Salon",
+      "lifetime": "À vie",
+      "allTimeRevenue": "Revenus totaux",
+      "today": "Aujourd'hui",
+      "thisWeek": "Cette semaine",
+      "thisMonth": "Ce mois",
+      "allTime": "Tout temps",
+      "activeStaff": "Personnel actif",
+      "total": "total",
+      "bookings": "Réservations",
+      "appointments": "rendez-vous",
+      "monthlyRevenue": "Revenus mensuels du salon",
+      "byService": "Par service",
+      "revenueBreakdown": "Répartition des revenus",
+      "statusChart": "Statut des rendez-vous",
+      "last6Months": "6 derniers mois",
+      "staffLeaderboard": "Classement du personnel",
+      "topClients": "Meilleurs clients",
+      "noStaff": "Aucune donnée de personnel disponible.",
+      "noClients": "Aucune donnée client pour l'instant.",
+      "visits": "visites",
+      "loading": "Chargement des statistiques du salon…",
+      "todayBookings": "Rendez-vous du jour",
+      "totalToday": "rendez-vous aujourd'hui",
+      "appts": "RDV",
+      "done": "fait",
+      "left": "restant",
+      "noBookingsToday": "Aucun rendez-vous prévu aujourd'hui."
     }
   }
 }

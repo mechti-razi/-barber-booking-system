@@ -61,7 +61,7 @@
         "emailRequired": "Email is required",
         "passwordRequired": "Password is required"
       },
-      "brandKicker": "Barber booking",
+      "brandKicker": "Coupena booking",
       "heroCopy": "Sign in to manage your appointments, check barber availability, and keep everything in one place.",
       "stats": {
         "barbers": "Barbers",
@@ -81,7 +81,7 @@
     "register": {
       "kicker": "New account",
       "title": "Create account",
-      "subtitle": "Join BarberBook — it's free.",
+      "subtitle": "Join Coupena — it's free.",
       "brandKicker": "Create your profile",
       "heroCopy": "Set up your account once — book faster, save your details, and track every visit from one place.",
       "fullName": "Full name",
@@ -108,9 +108,11 @@
         "passwordMismatch": "Passwords don't match"
       },
       "stats": {
-        "barbers": "Barbers",
-        "always": "Always",
-        "free": "Free",
+        "barbers500": "500+",
+        "barbersLabel": "Barbers",
+        "freeNum": "Free",
+        "freeLabel": "Always",
+        "signupNum": "30s",
         "signupTime": "To sign up"
       },
       "badges": {
@@ -144,6 +146,12 @@
     "ctaTitle": "Ready for your best haircut?",
     "ctaSub": "Join thousands of clients booking smarter every day.",
     "noShops": "No shops available yet.",
+    "contactTitle": "Get in touch",
+    "contactSub": "Have a question or need help booking? We're here for you.",
+    "contactEmail": "mechtirazi@gmail.com",
+    "contactPhone": "+216 24 060 251",
+    "contactEmailLabel": "Email us",
+    "contactCallLabel": "Call us",
     "steps": {
       "1": { "title": "Browse Shops", "desc": "Find top-rated barbers near you" },
       "2": { "title": "Pick a Service", "desc": "Choose from haircuts, fades, trims & more" },
@@ -217,6 +225,25 @@
     "dateLabels": {
       "today": "Today",
       "tomorrow": "Tomorrow"
+    },
+    "review": {
+      "rateBtn": "Rate this visit",
+      "rated": "You rated this visit",
+      "eyebrow": "Your feedback",
+      "title": "How was your visit?",
+      "starHint": "Tap a star to rate",
+      "star1": "Not great",
+      "star2": "Could be better",
+      "star3": "It was okay",
+      "star4": "Really good",
+      "star5": "Absolutely amazing!",
+      "commentPlaceholder": "Tell us more about your experience (optional)…",
+      "submit": "Submit Review",
+      "submitting": "Submitting…",
+      "successTitle": "Review submitted!",
+      "successSub": "Thank you — your feedback helps the whole community.",
+      "errorNoRating": "Please select a star rating before submitting.",
+      "errorFailed": "Failed to submit your review. Please try again."
     }
   },
 
@@ -304,8 +331,51 @@
       "spent": "Dz spent"
     },
     "since": "Since",
-    "version": "BarberBook · v2.0",
-    "loading": "Loading…"
+    "version": "Coupena · v2.0",
+    "loading": "Loading…",
+    "faq": {
+      "title": "Help & FAQ",
+      "subtitle": "Common questions answered",
+      "q1": "How do I book an appointment?",
+      "a1": "Go to Shops from the navigation, choose a barber shop, select a barber and a service, pick your preferred date and time slot, then confirm your booking. You will receive a confirmation instantly.",
+      "q2": "Can I cancel my appointment?",
+      "a2": "Yes. Open My Appointments from the profile menu, find your booking, and tap Cancel. Cancellations are free if made at least 1 hour before the appointment time.",
+      "q3": "How do I enable appointment reminders?",
+      "a3": "Go to your Profile and find 'Appointment Reminders' in the Support section. Tap the toggle to enable push notifications. You will be reminded 24 hours and 1 hour before each appointment.",
+      "q4": "Is my personal data secure?",
+      "a4": "Yes. All data is transmitted over HTTPS and stored securely. We never sell your personal information to third parties. See our Privacy Policy for full details.",
+      "q5": "How do I contact support?",
+      "a5": "For any issue not covered here, reach out to us at mechtirazi@gmail.com or call +216 24 060 251. We typically respond within 24 hours."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "subtitle": "How we handle your data",
+      "s1title": "Data We Collect",
+      "s1body": "We collect your name, email address, phone number, and booking history to provide the service. We may also collect device information and usage data to improve the app experience.",
+      "s2title": "How We Use It",
+      "s2body": "Your data is used to manage your bookings, send appointment reminders, and improve the platform. We do not use your data for advertising purposes.",
+      "s3title": "Data Sharing",
+      "s3body": "We do not sell your personal data. We share only the minimum necessary information with the barber shop you book with (name, phone, appointment details). We may use trusted service providers to operate the platform under strict data agreements.",
+      "s4title": "Your Rights",
+      "s4body": "You have the right to access, correct, or delete your personal data at any time. You can also request a copy of your data or withdraw consent. Contact us at mechtirazi@gmail.com or call +216 24 060 251 to exercise your rights.",
+      "s5title": "Data Retention",
+      "s5body": "We retain your account data for as long as your account is active. Booking history is kept for 12 months after the appointment date. You can request deletion at any time."
+    },
+    "pushNotifications": {
+      "title": "Appointment Reminders",
+      "blockedDesc": "Blocked in browser settings — re-enable in your browser",
+      "enabledDesc": "Notifications on — you'll be reminded 24h and 1h before",
+      "disabledDesc": "Get push reminders even when the app is closed"
+    }
+  },
+
+  "admin": {
+    "nav": {
+      "overview": "Overview & Analytics",
+      "manageBarbers": "Manage Barbers",
+      "subscriptions": "Subscription Settings",
+      "manageServices": "Manage Services"
+    }
   },
 
   "barber": {
@@ -319,7 +389,9 @@
       "loading": "Loading your workspace…",
       "signOut": "Sign Out",
       "proPanelTag": "Pro Panel",
-      "version": "v2.0 · Barber Pro"
+      "version": "v2.0 · Coupena Pro",
+      "lightMode": "Light mode",
+      "darkMode": "Dark mode"
     },
     "mobileNav": {
       "dashboard": "Dashboard",
@@ -327,11 +399,13 @@
       "services": "Services",
       "schedule": "Schedule",
       "staff": "Staff",
+      "shopStats": "Shop Stats",
       "profile": "Profile"
     },
     "reservations": {
       "eyebrow": "Barber Workspace",
       "title": "Reservations",
+      "loading": "Loading Reservations Workspace…",
       "subtitle": "Track, confirm, and manage customer bookings in real-time",
       "newReservation": "New Reservation",
       "searchPlaceholder": "Search client, service, date…",
@@ -406,6 +480,12 @@
       "calendar": {
         "workingHours": "Working hours",
         "break": "Break",
+        "weekdays": {
+          "su": "Su", "mo": "Mo", "tu": "Tu", "we": "We",
+          "th": "Th", "fr": "Fr", "sa": "Sa"
+        },
+        "workingHoursLabel": "Working hours: {{start}} – {{end}}",
+        "breakHint": "· Break {{start}}–{{end}}",
         "legend": {
           "available": "Available",
           "pending": "Pending",
@@ -468,12 +548,19 @@
       "deactivate": "Deactivate",
       "performanceCalendar": "Performance & Calendar",
       "noBio": "No biography provided.",
+      "generalBarber": "General Barber",
+      "stylist": "Stylist",
+      "yearsExp": "yr",
+      "yearsExpPlural": "yrs",
       "hireModal": {
         "title": "Hire New Staff",
         "subtitle": "Fill in the details below",
         "name": "Name",
         "email": "Email",
         "phone": "Phone",
+        "namePlaceholder": "e.g. John Doe",
+        "emailPlaceholder": "john@example.com",
+        "phonePlaceholder": "+216 XX XXX XXX",
         "password": "Password",
         "passwordPlaceholder": "Min 8 chars",
         "specialization": "Specialization",
@@ -585,6 +672,38 @@
       "revenueBreakdown": "Revenue breakdown",
       "ofTotal": "of total",
       "loading": "Loading…"
+    },
+    "shopStats": {
+      "eyebrow": "Shop Overview",
+      "title": "Shop Statistics",
+      "lifetime": "Lifetime",
+      "allTimeRevenue": "All-Time Revenue",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "allTime": "All Time",
+      "activeStaff": "Active Staff",
+      "total": "total",
+      "bookings": "Bookings",
+      "appointments": "appointments",
+      "monthlyRevenue": "Shop Monthly Revenue",
+      "byService": "By Service",
+      "revenueBreakdown": "Revenue breakdown",
+      "statusChart": "Appointment Status",
+      "last6Months": "Last 6 months",
+      "staffLeaderboard": "Staff Leaderboard",
+      "topClients": "Top Clients",
+      "noStaff": "No staff data available.",
+      "noClients": "No client data yet.",
+      "visits": "visits",
+      "loading": "Loading shop statistics…",
+      "todayBookings": "Today's Bookings",
+      "totalToday": "appointments today",
+      "appts": "appts",
+      "done": "done",
+      "left": "left",
+      "noBookingsToday": "No bookings scheduled for today."
     }
   }
+
 }

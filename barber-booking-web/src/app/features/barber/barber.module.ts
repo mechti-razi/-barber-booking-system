@@ -10,6 +10,7 @@ import { BarberScheduleComponent } from './barber-schedule/barber-schedule.compo
 import { BarberStaffComponent } from './barber-staff/barber-staff.component';
 import { BarberServicesComponent } from './barber-services/barber-services.component';
 import { BarberProfileComponent } from './barber-profile/barber-profile.component';
+import { ShopStatisticsComponent } from './shop-statistics/shop-statistics.component';
 import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
@@ -20,7 +21,8 @@ import { SharedModule } from '../../shared/shared.module';
     BarberScheduleComponent,
     BarberStaffComponent,
     BarberServicesComponent,
-    BarberProfileComponent
+    BarberProfileComponent,
+    ShopStatisticsComponent
   ],
   imports: [
     CommonModule,

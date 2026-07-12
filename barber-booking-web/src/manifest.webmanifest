@@ -1,7 +1,7 @@
 {
-  "name": "Barber Booking System",
-  "short_name": "BarberBook",
-  "description": "Book appointments at your favorite barber shops",
+  "name": "Coupena",
+  "short_name": "Coupena",
+  "description": "Book appointments at your favorite salons and barber shops with Coupena",
   "theme_color": "#667eea",
   "background_color": "#ffffff",
   "display": "standalone",

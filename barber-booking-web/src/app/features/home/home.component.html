@@ -8,15 +8,9 @@
       <!-- Brand -->
       <div class="brand">
         <div class="brand-logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-               stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="6" cy="6" r="3"></circle>
-            <circle cx="6" cy="18" r="3"></circle>
-            <line x1="9.8" y1="8.2" x2="21" y2="12.6"></line>
-            <line x1="9.8" y1="15.8" x2="21" y2="11.4"></line>
-          </svg>
+          <img src="assets/images/coupena-logo.png" alt="Coupena Logo" class="brand-logo-img">
         </div>
-        <span class="brand-name">BarberBook</span>
+        <span class="brand-name">Coupena</span>
       </div>
 
       <!-- Auth actions -->
@@ -139,7 +133,7 @@
           <img [src]="shop.logo_url || 'https://picsum.photos/400/220?random=' + shop.id" [alt]="shop.name"
                loading="lazy" class="shop-thumb-img"/>
           <div class="shop-thumb-overlay"></div>
-          <span class="shop-open-dot" [class.open]="shop.active"></span>
+          <span class="shop-open-dot" [class.open]="shopService.isShopOpen(shop)"></span>
         </div>
         <div class="shop-thumb-body">
           <p class="shop-thumb-name">{{ shop.name }}</p>
@@ -219,4 +213,26 @@
       <a routerLink="/shops"         class="btn-hero-secondary">{{ 'home.browseShops' | translate }}</a>
     </div>
   </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p class="footer-brand">Coupena &copy; {{ currentYear }}</p>
+    <div class="footer-contacts">
+      <a href="mailto:mechtirazi@gmail.com" class="footer-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>mechtirazi&#64;gmail.com
+      </a>
+      <span class="footer-sep">·</span>
+      <a href="tel:+21624060251" class="footer-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.55a16 16 0 0 0 5.93 5.93l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+        </svg>
+        +216 24 060 251
+      </a>
+    </div>
+  </footer>
 </div>

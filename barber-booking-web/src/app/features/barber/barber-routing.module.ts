@@ -7,6 +7,7 @@ import { BarberScheduleComponent } from './barber-schedule/barber-schedule.compo
 import { BarberStaffComponent } from './barber-staff/barber-staff.component';
 import { BarberServicesComponent } from './barber-services/barber-services.component';
 import { BarberProfileComponent } from './barber-profile/barber-profile.component';
+import { ShopStatisticsComponent } from './shop-statistics/shop-statistics.component';
 import { OwnerGuard } from '../../core/guards/owner.guard';
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'schedule', component: BarberScheduleComponent },
       { path: 'staff', component: BarberStaffComponent, canActivate: [OwnerGuard] },
       { path: 'services', component: BarberServicesComponent, canActivate: [OwnerGuard] },
+      { path: 'shop-stats', component: ShopStatisticsComponent, canActivate: [OwnerGuard] },
       { path: 'profile', component: BarberProfileComponent }
     ]
   }
