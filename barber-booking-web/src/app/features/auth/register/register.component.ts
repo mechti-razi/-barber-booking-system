@@ -54,7 +54,14 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/home']);
       },
       error: (error: any) => {
-        this.error = error.error?.message || 'Registration failed';
+        if (error.error?.errors) {
+          const errs = error.error.errors;
+          this.error = Object.keys(errs)
+            .map(key => errs[key].join(', '))
+            .join(' | ');
+        } else {
+          this.error = error.error?.message || 'Registration failed';
+        }
         this.loading = false;
       }
     });
