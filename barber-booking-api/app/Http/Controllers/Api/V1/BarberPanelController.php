@@ -834,8 +834,6 @@ class BarberPanelController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            // Limit to 1 MB so the base64 string (~1.37 MB) stays comfortably
-            // inside MySQL's LONGTEXT column and doesn't bloat the DB too much.
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:1024',
         ]);
 
@@ -847,20 +845,28 @@ class BarberPanelController extends Controller
             return response()->json(['error' => 'No image file uploaded.'], 400);
         }
 
-        $file     = $request->file('logo');
-        $mimeType = $file->getMimeType();
-        $base64   = base64_encode(file_get_contents($file->getRealPath()));
+        try {
+            $file     = $request->file('logo');
+            $mimeType = $file->getMimeType();
+            $base64   = base64_encode(file_get_contents($file->getRealPath()));
 
-        // Store as a Data URL — works everywhere with zero infrastructure.
-        // The logo_url column is LONGTEXT so it can hold this without truncation.
-        $logoUrl = 'data:' . $mimeType . ';base64,' . $base64;
+            // Store as a Data URL — works everywhere with zero infrastructure.
+            // The logo_url column is LONGTEXT so it can hold this without truncation.
+            $logoUrl = 'data:' . $mimeType . ';base64,' . $base64;
 
-        $shop->update(['logo_url' => $logoUrl]);
+            $shop->update(['logo_url' => $logoUrl]);
 
-        return response()->json([
-            'message'  => 'Logo uploaded successfully.',
-            'logo_url' => $logoUrl,
-        ]);
+            return response()->json([
+                'message'  => 'Logo uploaded successfully.',
+                'logo_url' => $logoUrl,
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('uploadLogo failed: ' . $e->getMessage());
+            return response()->json([
+                'error'   => 'Upload failed.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 

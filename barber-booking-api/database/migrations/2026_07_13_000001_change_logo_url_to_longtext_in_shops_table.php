@@ -1,24 +1,18 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('shops', function (Blueprint $table) {
-            // VARCHAR(255) is too small for Base64-encoded images.
-            // LONGTEXT supports up to 4 GB — more than enough for any logo.
-            $table->longText('logo_url')->nullable()->change();
-        });
+        // Use raw SQL — works on all MySQL/MariaDB versions without doctrine/dbal
+        DB::statement('ALTER TABLE shops MODIFY COLUMN logo_url LONGTEXT NULL');
     }
 
     public function down(): void
     {
-        Schema::table('shops', function (Blueprint $table) {
-            $table->string('logo_url')->nullable()->change();
-        });
+        DB::statement('ALTER TABLE shops MODIFY COLUMN logo_url VARCHAR(255) NULL');
     }
 };
