@@ -14,6 +14,9 @@ php artisan migrate --force --no-ansi
 echo "==> Linking storage..."
 php artisan storage:link --no-ansi || true
 
+echo "==> Clearing any stale caches..."
+php artisan optimize:clear --no-ansi || true
+
 echo "==> Caching config & routes..."
 php artisan config:cache --no-ansi
 php artisan route:cache --no-ansi

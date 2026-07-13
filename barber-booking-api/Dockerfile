@@ -60,7 +60,11 @@ RUN mkdir -p storage/logs \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache \
     && chmod +x docker/start.sh \
-    && rm -f .env
+    && rm -f .env \
+    && rm -f bootstrap/cache/config.php \
+    && rm -f bootstrap/cache/routes-v7.php \
+    && rm -f bootstrap/cache/events.php \
+    && rm -f bootstrap/cache/compiled.php
 
 EXPOSE 80
 
