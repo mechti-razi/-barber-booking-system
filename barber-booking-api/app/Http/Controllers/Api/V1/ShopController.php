@@ -31,7 +31,7 @@ class ShopController extends Controller
             'phone' => 'required|string|max:20',
             'email' => 'required|string|email|max:255',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string|max:500',
+            'logo_url' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -65,7 +65,7 @@ class ShopController extends Controller
             'phone' => 'sometimes|required|string|max:20',
             'email' => 'sometimes|required|string|email|max:255',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string|max:500',
+            'logo_url' => 'nullable|string',
             'status' => 'sometimes|required|in:active,inactive,suspended',
         ]);
 

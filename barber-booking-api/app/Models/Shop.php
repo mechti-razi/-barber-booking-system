@@ -56,8 +56,13 @@ class Shop extends Model
 
     /**
      * Get the shop's logo URL.
-     * Dynamically rewrites any stored base URL to match the current request's host/IP+port,
-     * so images keep working even when the server IP changes.
+     *
+     * - Base64 data URLs (data:image/...) are returned as-is — they are
+     *   self-contained and need no URL rewriting.
+     * - Local-storage URLs (containing /storage/) have their host rewritten to
+     *   match the current request's host/IP+port so they keep working even when
+     *   the server IP changes during local development.
+     * - All other URLs (external CDN, R2, etc.) are returned unchanged.
      */
     public function getLogoUrlAttribute($value)
     {
@@ -65,20 +70,31 @@ class Shop extends Model
             return null;
         }
 
-        if (filter_var($value, FILTER_VALIDATE_URL) && !app()->runningInConsole()) {
-            $parsed = parse_url($value);
-            if (isset($parsed['host'])) {
-                $request    = request();
-                $scheme     = $request->getScheme();
-                $host       = $request->getHost();
-                $port       = $request->getPort();
-                $portStr    = ($port && !in_array($port, [80, 443])) ? ':' . $port : '';
-                $newBase    = $scheme . '://' . $host . $portStr;
+        // Base64 data URLs are self-contained — return immediately
+        if (str_starts_with($value, 'data:')) {
+            return $value;
+        }
 
-                $path  = $parsed['path'] ?? '';
-                $query = isset($parsed['query']) ? '?' . $parsed['query'] : '';
-                return $newBase . $path . $query;
-            }
+        if (!filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+
+        $parsed = parse_url($value);
+        $path   = $parsed['path'] ?? '';
+
+        // Only rewrite host for local /storage/ paths
+        if (!str_contains($path, '/storage/')) {
+            return $value;
+        }
+
+        if (!app()->runningInConsole()) {
+            $request = request();
+            $scheme  = $request->getScheme();
+            $host    = $request->getHost();
+            $port    = $request->getPort();
+            $portStr = ($port && !in_array((int)$port, [80, 443])) ? ':' . $port : '';
+            $query   = isset($parsed['query']) ? '?' . $parsed['query'] : '';
+            return $scheme . '://' . $host . $portStr . $path . $query;
         }
 
         return $value;

@@ -795,7 +795,7 @@ class BarberPanelController extends Controller
         $validator = Validator::make($request->all(), [
             'name'        => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
-            'logo_url'    => 'nullable|url|max:500',
+            'logo_url'    => 'nullable|string',
             'phone'       => 'nullable|string|max:30',
             'email'       => 'nullable|email|max:255',
             'address'     => 'nullable|string|max:255',
@@ -834,44 +834,33 @@ class BarberPanelController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // Max 5MB
+            // Limit to 1 MB so the base64 string (~1.37 MB) stays comfortably
+            // inside MySQL's LONGTEXT column and doesn't bloat the DB too much.
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:1024',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        if ($request->hasFile('logo')) {
-            // Delete old file if exists
-            if ($shop->logo_url) {
-                // Extract relative path from logo_url
-                $parsedUrl = parse_url($shop->logo_url);
-                if (isset($parsedUrl['path'])) {
-                    // path will look like /storage/shops/xyz.jpg, let's remove /storage/ prefix to match public disk root
-                    $relativePath = preg_replace('/^\/storage\//', '', $parsedUrl['path']);
-                    if (Storage::disk('public')->exists($relativePath)) {
-                        Storage::disk('public')->delete($relativePath);
-                    }
-                }
-            }
-
-            // Store new file
-            $file = $request->file('logo');
-            $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('shops', $fileName, 'public');
-
-            // Generate full URL
-            $logoUrl = asset('storage/' . $path);
-
-            $shop->update(['logo_url' => $logoUrl]);
-
-            return response()->json([
-                'message' => 'Logo uploaded successfully.',
-                'logo_url' => $logoUrl
-            ]);
+        if (!$request->hasFile('logo')) {
+            return response()->json(['error' => 'No image file uploaded.'], 400);
         }
 
-        return response()->json(['error' => 'No image file uploaded.'], 400);
+        $file     = $request->file('logo');
+        $mimeType = $file->getMimeType();
+        $base64   = base64_encode(file_get_contents($file->getRealPath()));
+
+        // Store as a Data URL — works everywhere with zero infrastructure.
+        // The logo_url column is LONGTEXT so it can hold this without truncation.
+        $logoUrl = 'data:' . $mimeType . ';base64,' . $base64;
+
+        $shop->update(['logo_url' => $logoUrl]);
+
+        return response()->json([
+            'message'  => 'Logo uploaded successfully.',
+            'logo_url' => $logoUrl,
+        ]);
     }
 
 

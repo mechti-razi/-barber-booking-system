@@ -167,9 +167,9 @@ export class BarberProfileComponent implements OnInit {
     const file  = input.files?.[0];
     if (!file) return;
 
-    // Validate size (max 5 MB)
-    if (file.size > 5 * 1024 * 1024) {
-      this.shopErrorMessage = 'Image must be smaller than 5 MB.';
+    // Validate size (max 2 MB before resize)
+    if (file.size > 2 * 1024 * 1024) {
+      this.shopErrorMessage = 'Image must be smaller than 2 MB.';
       setTimeout(() => this.shopErrorMessage = '', 4000);
       return;
     }
@@ -179,8 +179,43 @@ export class BarberProfileComponent implements OnInit {
     this.logoPreviewUrl = URL.createObjectURL(file);
     this.pendingLogoFile = file;
 
-    // Upload immediately
-    this.uploadLogo(file);
+    // Resize to max 400×400 px before uploading to keep the base64 payload small
+    this.resizeAndUpload(file);
+  }
+
+  /** Resize image to max 400×400 then upload */
+  private resizeAndUpload(file: File): void {
+    const MAX_DIM = 400;
+    const reader  = new FileReader();
+
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.onload = () => {
+        // Calculate new dimensions preserving aspect ratio
+        let w = img.width;
+        let h = img.height;
+        if (w > MAX_DIM || h > MAX_DIM) {
+          if (w > h) { h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+          else       { w = Math.round(w * MAX_DIM / h); h = MAX_DIM; }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width  = w;
+        canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            this.shopErrorMessage = 'Failed to process image.';
+            return;
+          }
+          const resized = new File([blob], file.name, { type: 'image/jpeg' });
+          this.uploadLogo(resized);
+        }, 'image/jpeg', 0.85); // 85% quality JPEG
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   /** Upload image to server right after selection */
