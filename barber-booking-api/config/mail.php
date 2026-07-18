@@ -70,6 +70,12 @@ return [
             'key' => env('BREVO_API_KEY'),
         ],
 
+        'google_script' => [
+            'transport' => 'google_script',
+            'url' => env('GOOGLE_SCRIPT_URL'),
+            'key' => env('GOOGLE_SCRIPT_KEY'),
+        ],
+
         'sendmail' => [
             'transport' => 'sendmail',
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),

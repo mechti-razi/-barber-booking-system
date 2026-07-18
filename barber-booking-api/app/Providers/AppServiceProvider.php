@@ -37,5 +37,13 @@ class AppServiceProvider extends ServiceProvider
                 $config['key'] ?? env('BREVO_API_KEY'),
             ));
         });
+
+        // Register Google Script HTTP API mailer transport
+        Mail::extend('google_script', function (array $config) {
+            return new \App\Mail\GoogleScriptTransport(
+                $config['url'] ?? env('GOOGLE_SCRIPT_URL'),
+                $config['key'] ?? env('GOOGLE_SCRIPT_KEY'),
+            );
+        });
     }
 }
