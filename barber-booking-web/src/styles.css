@@ -288,17 +288,6 @@ h1, h2, h3, h4, h5, h6 {
   animation: alertIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.alert::before {
-  content: '';
-  width: 22px;
-  height: 22px;
-  flex: 0 0 22px;
-  margin-top: -1px;
-  border-radius: 50%;
-  background: var(--alert-icon-bg);
-  border: 1px solid var(--alert-icon-border);
-  box-shadow: 0 0 18px var(--alert-glow);
-}
 
 .alert-danger,
 .alert-error {
@@ -331,31 +320,6 @@ h1, h2, h3, h4, h5, h6 {
   --alert-glow: rgba(245, 158, 11, 0.2);
 }
 
-.alert-danger::after,
-.alert-error::after,
-.alert-warning::after {
-  content: '';
-  position: absolute;
-  left: 26px;
-  top: 18px;
-  width: 2px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--alert-accent);
-  box-shadow: 0 10px 0 var(--alert-accent);
-}
-
-.alert-success::after {
-  content: '';
-  position: absolute;
-  left: 23px;
-  top: 20px;
-  width: 9px;
-  height: 5px;
-  border-left: 2px solid var(--alert-accent);
-  border-bottom: 2px solid var(--alert-accent);
-  transform: rotate(-45deg);
-}
 
 .alert svg {
   flex-shrink: 0;

@@ -268,16 +268,22 @@
 }
 
 .alert-icon-box {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-top: 1px;
+  animation: iconPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes iconPop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
 }
 
 .alert-content {
@@ -306,9 +312,10 @@
   --al-text:   #fecaca;
 }
 .alert-error .alert-icon-box {
-  background: rgba(239,68,68,0.14);
-  border-color: rgba(239,68,68,0.28);
+  background: rgba(239,68,68,0.16);
+  border-color: rgba(239,68,68,0.4);
   color: #f87171;
+  box-shadow: 0 0 0 4px rgba(239,68,68,0.1), 0 0 14px rgba(239,68,68,0.22);
 }
 
 /* Subscription expired — amber/gold */
@@ -318,9 +325,10 @@
   --al-text:   #fde68a;
 }
 .alert-expired .alert-icon-box {
-  background: rgba(212,175,55,0.12);
-  border-color: rgba(212,175,55,0.3);
+  background: rgba(212,175,55,0.16);
+  border-color: rgba(212,175,55,0.42);
   color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.1), 0 0 14px rgba(212,175,55,0.22);
 }
 
 /* Account deactivated — orange */
@@ -330,9 +338,10 @@
   --al-text:   #fed7aa;
 }
 .alert-deactivated .alert-icon-box {
-  background: rgba(249,115,22,0.12);
-  border-color: rgba(249,115,22,0.28);
+  background: rgba(249,115,22,0.16);
+  border-color: rgba(249,115,22,0.4);
   color: #fb923c;
+  box-shadow: 0 0 0 4px rgba(249,115,22,0.1), 0 0 14px rgba(249,115,22,0.2);
 }
 
 /* ── Form ── */

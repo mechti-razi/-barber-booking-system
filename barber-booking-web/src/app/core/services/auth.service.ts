@@ -123,4 +123,13 @@ export class AuthService {
     if (!profile) return null;
     try { return JSON.parse(profile); } catch { return null; }
   }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(data: { token: string; email: string; password: string; password_confirmation: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, data);
+  }
 }
+

@@ -51,12 +51,32 @@ export class LoginComponent implements OnInit {
           this.router.navigate([this.returnUrl]);
         }
       },
-      error: (error: any) => {
-        const code = error.error?.error;
+      error: (err: any) => {
+        const body = err.error;
+        const code = body?.error;
+
+        // Classify the error type for styled alert display
         this.errorType = (code === 'subscription_expired' || code === 'account_deactivated')
           ? code
           : 'generic';
-        this.error = error.error?.message || 'Login failed';
+
+        // Extract the most specific message available
+        if (body?.message) {
+          this.error = body.message;
+        } else if (body?.errors) {
+          // Laravel validation errors — flatten first field's message
+          const firstKey = Object.keys(body.errors)[0];
+          this.error = body.errors[firstKey]?.[0] || 'Validation error. Please check your inputs.';
+        } else if (err.status === 0) {
+          this.error = 'Cannot reach the server. Please check your internet connection.';
+        } else if (err.status === 429) {
+          this.error = 'Too many attempts. Please wait a moment before trying again.';
+        } else if (err.status === 500) {
+          this.error = 'A server error occurred. Please try again later.';
+        } else {
+          this.error = 'Login failed. Please check your email and password.';
+        }
+
         this.loading = false;
       }
     });

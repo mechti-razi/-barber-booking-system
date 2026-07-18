@@ -69,15 +69,6 @@
           </span>
           <span>{{ 'barber.mobileNav.services' | translate }}</span>
         </a>
-        <a routerLink="shop-stats" routerLinkActive="active" class="nav-link" *ngIf="isOwner">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-          </span>
-          <span>{{ 'barber.mobileNav.shopStats' | translate }}</span>
-        </a>
         <a routerLink="profile" routerLinkActive="active" class="nav-link">
           <span class="nav-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -181,13 +172,6 @@
         <line x1="10" y1="14" x2="14" y2="14"></line>
       </svg>
       <span>{{ 'barber.mobileNav.services' | translate }}</span>
-    </a>
-    <a routerLink="shop-stats" routerLinkActive="mob-active" class="mob-nav-item" *ngIf="isOwner">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
-      <span>{{ 'barber.mobileNav.shopStats' | translate }}</span>
     </a>
     <a routerLink="profile" routerLinkActive="mob-active" class="mob-nav-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
