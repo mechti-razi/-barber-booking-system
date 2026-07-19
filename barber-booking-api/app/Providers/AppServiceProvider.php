@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Mail\GoogleScriptTransport;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +26,13 @@ class AppServiceProvider extends ServiceProvider
         if (PHP_OS_FAMILY === 'Windows' && env('OPENSSL_CONF') && !getenv('OPENSSL_CONF')) {
             putenv('OPENSSL_CONF=' . env('OPENSSL_CONF'));
         }
+
+        // Register the custom Google Apps Script mail transport.
+        Mail::extend('google_script', function (array $config) {
+            return new GoogleScriptTransport(
+                $config['url'] ?? '',
+                $config['key'] ?? ''
+            );
+        });
     }
 }
