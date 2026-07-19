@@ -70,6 +70,16 @@ return [
             'key' => env('BREVO_API_KEY'),
         ],
 
+        'sendgrid' => [
+            'transport' => 'smtp',
+            'host'      => 'smtp.sendgrid.net',
+            'port'      => 587,
+            'scheme'    => 'tls',
+            'username'  => 'apikey',
+            'password'  => env('SENDGRID_API_KEY'),
+            'timeout'   => null,
+        ],
+
         'google_script' => [
             'transport' => 'google_script',
             'url' => env('GOOGLE_SCRIPT_URL'),
